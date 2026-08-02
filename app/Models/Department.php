@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Deanship extends Model
+class Department extends Model
 {
-    /** @use HasFactory<\Database\Factories\DeanshipFactory> */
+    /** @use HasFactory<\Database\Factories\DepartmentFactory> */
     use HasFactory;
-
     protected $fillable = [
         'name',
         'code',
@@ -18,19 +17,19 @@ class Deanship extends Model
         'office_number',
         'is_active',
         'description',
+        'deanship_id',
     ];
-
-    Protected $casts = [
+    protected $casts = [
         'name' => 'array',
-        'is_active' => 'boolean',
+        'is_active' => 'boolean'
     ];
 
     public function getTransNameAttribute()
     {
         return $this->name[app()->getLocale()] ?? $this->name['en'];
     }
-    public function departments()
+    public function deanship()
     {
-        return $this->hasMany(Department::class);
+        return $this->belongsTo(Deanship::class)->withDefault();
     }
 }

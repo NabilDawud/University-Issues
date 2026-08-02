@@ -3,21 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Deanship;
+use App\Models\Department;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Validation\Rule;
 
-use function Pest\Laravel\delete;
-
-class DeanshipController extends Controller
+class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $deanships = Deanship::latest('id')->withCount('departments')->paginate(env('PAGINATION_COUNT', 10));
-        return view('cms.deanships.index', compact('deanships'));
+        $departments = Department::with('deanship')->latest('id')->paginate(env('PAGINATION_COUNT', 10));
+        return view('cms.departments.index', compact('departments'));
     }
 
     /**
@@ -25,7 +23,8 @@ class DeanshipController extends Controller
      */
     public function create()
     {
-        return view('cms.deanships.create');
+        $deanships = Deanship::all();
+        return view('cms.departments.create', compact('deanships'));
     }
 
     /**
@@ -36,14 +35,14 @@ class DeanshipController extends Controller
         $validatedData = $request->validate([
             'name_en' => 'required|string|max:255',
             'name_ar' => 'required|string|max:255',
-            'code' => 'required|numeric|digits:4|unique:deanships,code',
-            'email' => 'required|email|unique:deanships,email',
-            'extension_number' => 'nullable|string|max:20',
-            'office_number' => 'required|string|max:20',
+            'code' => 'required|numeric|digits:4|unique:departments,code',
+            'email' => 'required|email|max:255|unique:departments,email',
+            'extension_number' => 'nullable|string|max:255',
+            'office_number' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'deanship_id' => 'required|exists:deanships,id',
         ]);
-
-        Deanship::create([
+        Department::create([
             'name' => [
                 'en' => $validatedData['name_en'],
                 'ar' => $validatedData['name_ar'],
@@ -54,36 +53,37 @@ class DeanshipController extends Controller
             'office_number' => $validatedData['office_number'],
             'is_active' => $request->boolean('is_active'),
             'description' => $validatedData['description'] ?? null,
+            'deanship_id' => $validatedData['deanship_id'],
         ]);
-
         return response()->json([
-            'message' => 'Deanship created successfully.',
+            'message' => 'Department created successfully.',
             'icon' => 'success',
-        ]);
-    }
+        ], 201);
+    }   
 
     /**
      * Display the specified resource.
      */
-    public function show(Deanship $deanship)
+    public function show(Department $department)
     {
-        return view('cms.deanships.show', compact('deanship'));
+        $deanships = Deanship::all();
+        return view('cms.departments.show', compact('department', 'deanships'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Deanship $deanship)
+    public function edit(Department $department)
     {
-        return view('cms.deanships.edit', compact('deanship'));
+        $deanships = Deanship::all();
+        return view('cms.departments.edit', compact('department', 'deanships'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Deanship $deanship)
+    public function update(Request $request, Department $department)
     {
-        // dd($request->all() , $request->boolean('is_active'));
         $validatedData = $request->validate([
             'name_en' => 'required|string|max:255',
             'name_ar' => 'required|string|max:255',
@@ -91,19 +91,20 @@ class DeanshipController extends Controller
                 'required',
                 'numeric',
                 'digits:4',
-                Rule::unique('deanships', 'code')->ignore($deanship->id),
+                Rule::unique('departments', 'code')->ignore($department->id),
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('deanships', 'email')->ignore($deanship->id)
+                'max:255',
+                Rule::unique('departments', 'email')->ignore($department->id),
             ],
-            'extension_number' => 'nullable|string|max:20',
-            'office_number' => 'required|string|max:20',
+            'extension_number' => 'nullable|string|max:255',
+            'office_number' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'deanship_id' => 'required|exists:deanships,id',
         ]);
-
-        $deanship->update([
+        $department->update([
             'name' => [
                 'en' => $validatedData['name_en'],
                 'ar' => $validatedData['name_ar'],
@@ -114,24 +115,24 @@ class DeanshipController extends Controller
             'office_number' => $validatedData['office_number'],
             'is_active' => $request->boolean('is_active'),
             'description' => $validatedData['description'] ?? null,
+            'deanship_id' => $validatedData['deanship_id'],
         ]);
-
         return response()->json([
-            'message' => 'Deanship created successfully.',
+            'message' => 'Department updated successfully.',
             'icon' => 'success',
-            'redirect' => route('admin.deanships.index')
+            'redirect' => route('admin.departments.index'),
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Deanship $deanship)
+    public function destroy(Department $department)
     {
-        $deanship->delete();
+        $department->delete();
         return response()->json([
-            'message' => 'Deanship deleted successfully.',
-            'icon' => 'success'
+            'message' => 'Department deleted successfully.',
+            'icon' => 'success',
         ]);
     }
 }

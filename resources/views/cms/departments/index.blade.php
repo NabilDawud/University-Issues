@@ -1,10 +1,10 @@
 @extends('cms.parent')
 
-@section('title', 'Deanships')
+@section('title', 'Index Departments')
 
-@section('main-title', 'Index Deanships')
+@section('main-title', 'Index Departments')
 
-@section('sub-title', 'index deanships')
+@section('sub-title', 'index departments')
 
 @section('styles')
 @endsection
@@ -16,41 +16,41 @@
         <div class="card mb-4">
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">Deanships Table</h3>
-                    <a href="{{ route('admin.deanships.create') }}" class="btn btn-info">Create Deanship</a>
+                    <h3 class="card-title">Departments Table</h3>
+                    <a href="{{ route('admin.departments.create') }}" class="btn btn-info">Create Department</a>
                 </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body p-0 table-responsive w-100">
-                <table class="table table-striped align-middle m-0 text-nowrap" >
+                <table class="table table-striped align-middle m-0 text-nowrap">
                     <thead>
                         <tr class="text-center">
                             <th style="width: 10px">#</th>
-                            <th>Deanship Name</th>
+                            <th>Department Name</th>
                             <th>Extension Number</th>
                             <th>Office Number</th>
                             <th>Status</th>
-                            <th>Number of Departments</th>
+                            <th>Deanship</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($deanships as $deanship)
+                        @foreach ($departments as $department)
                             <tr class="align-middle text-center">
-                                <td>{{ $deanship->id }}</td>
-                                <td>{{ $deanship->trans_name }}</td>
-                                <td>{{ $deanship->extension_number }}</td>
-                                <td>{{ $deanship->office_number }}</td>
+                                <td>{{ $department->id }}</td>
+                                <td>{{ $department->trans_name }}</td>
+                                <td>{{ $department->extension_number }}</td>
+                                <td>{{ $department->office_number }}</td>
                                 <td><span
-                                        class="badge text-bg-{{ $deanship->is_active ? 'success' : 'danger' }}">{{ $deanship->is_active ? 'Active' : 'Inactive' }}</span>
+                                        class="badge text-bg-{{ $department->is_active ? 'success' : 'danger' }}">{{ $department->is_active ? 'Active' : 'Inactive' }}</span>
                                 </td>
-                                <td>{{ $deanship->departments_count }}</td>
+                                <td>{{ $department->deanship->trans_name ?? 'N/A' }}</td>
                                 <td>
-                                    <a href="{{ route('admin.deanships.show', $deanship->id) }}"
+                                    <a href="{{ route('admin.departments.show', $department->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.deanships.edit', $deanship->id) }}"
+                                    <a href="{{ route('admin.departments.edit', $department->id) }}"
                                         class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.deanships.destroy', $deanship->id) }}" method="POST"
+                                    <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST"
                                         style="display: inline-block;" class="form-delete delete-form">
                                         @csrf
                                         @method('DELETE')
@@ -65,8 +65,8 @@
                 </table>
             </div>
             <!-- /.card-body -->
-            @if ($deanships->hasPages())
-                <span class="p-2">{{ $deanships->links() }}</span>
+            @if ($departments->hasPages())
+                <span class="p-2">{{ $departments->links() }}</span>
             @endif
         </div>
         <!-- /.card -->

@@ -460,6 +460,31 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link  align-items-center">
+                                <i class="nav-icon fa-solid fa-sitemap"></i>
+                                <p>
+                                    Departments
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.departments.create') }}"
+                                        class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                        <p>Create Department </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.departments.index') }}"
+                                        class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-list"></i>
+                                        <p>Index Departments </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         {{-- end Content Management --}}
                         <br>
                         {{-- start Authentications --}}

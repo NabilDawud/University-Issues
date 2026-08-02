@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Deanship;
+use App\Models\Department;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Deanship>
+ * @extends Factory<Department>
  */
-class DeanshipFactory extends Factory
+class DepartmentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,7 @@ class DeanshipFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => [
+               'name' => [
                 'en' => fake()->unique()->company(),
                 'ar' => fake()->unique()->company(),
             ],
@@ -28,6 +28,7 @@ class DeanshipFactory extends Factory
             'office_number' => fake()->buildingNumber(),
             'is_active' => fake()->boolean(),
             'description' => fake()->paragraph(),
+            'deanship_id' =>  \App\Models\Deanship::inRandomOrder()->first()?->id ?? \App\Models\Deanship::factory(),
         ];
     }
 }
