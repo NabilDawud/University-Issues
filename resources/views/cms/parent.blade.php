@@ -34,6 +34,7 @@
 
     <!--begin::Accessibility Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
@@ -444,13 +445,15 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="./pages/profile.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.deanships.create') }}"
+                                        class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-circle-plus"></i>
                                         <p>Create Deanship </p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./pages/settings.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.deanships.index') }}"
+                                        class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-list"></i>
                                         <p>Index Deanships </p>
                                     </a>
@@ -606,15 +609,20 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js" crossorigin="anonymous"></script>
     <!-- sortablejs -->
     <script>
-        new Sortable(document.querySelector('.connectedSortable'), {
-            group: 'shared',
-            handle: '.card-header',
-        });
+        const sortableElement = document.querySelector('.connectedSortable');
 
-        const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
-        cardHeaders.forEach((cardHeader) => {
-            cardHeader.style.cursor = 'move';
-        });
+        if (sortableElement) {
+            new Sortable(sortableElement, {
+                group: 'shared',
+                handle: '.card-header',
+            });
+
+            const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
+
+            cardHeaders.forEach((cardHeader) => {
+                cardHeader.style.cursor = 'move';
+            });
+        }
     </script>
     <!-- apexcharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
@@ -671,11 +679,16 @@
             },
         };
 
-        const sales_chart = new ApexCharts(
-            document.querySelector('#revenue-chart'),
-            sales_chart_options,
-        );
-        sales_chart.render();
+        const revenueChart = document.querySelector('#revenue-chart');
+
+        if (revenueChart) {
+            const sales_chart = new ApexCharts(
+                revenueChart,
+                sales_chart_options,
+            );
+
+            sales_chart.render();
+        }
     </script>
     <!-- jsvectormap -->
     <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
@@ -685,10 +698,13 @@
     <!-- jsvectormap -->
     <script>
         // World map by jsVectorMap
-        new jsVectorMap({
-            selector: '#world-map',
-            map: 'world',
-        });
+        const worldMap = document.querySelector('#world-map');
+        if (worldMap) {
+            new jsVectorMap({
+                selector: '#world-map',
+                map: 'world',
+            });
+        }
 
         // Sparkline charts
         const option_sparkline1 = {
@@ -714,8 +730,15 @@
             colors: ['#DCE6EC'],
         };
 
-        const sparkline1 = new ApexCharts(document.querySelector('#sparkline-1'), option_sparkline1);
-        sparkline1.render();
+        const sparklineElement1 = document.querySelector('#sparkline-1');
+        if (sparklineElement1) {
+            const sparkline1 = new ApexCharts(
+                sparklineElement1,
+                option_sparkline1
+            );
+
+            sparkline1.render();
+        }
 
         const option_sparkline2 = {
             series: [{
@@ -740,8 +763,15 @@
             colors: ['#DCE6EC'],
         };
 
-        const sparkline2 = new ApexCharts(document.querySelector('#sparkline-2'), option_sparkline2);
-        sparkline2.render();
+        const sparklineElement2 = document.querySelector('#sparkline-2');
+        if (sparklineElement2) {
+            const sparkline2 = new ApexCharts(
+                sparklineElement2,
+                option_sparkline2
+            );
+
+            sparkline2.render();
+        }
 
         const option_sparkline3 = {
             series: [{
@@ -766,8 +796,15 @@
             colors: ['#DCE6EC'],
         };
 
-        const sparkline3 = new ApexCharts(document.querySelector('#sparkline-3'), option_sparkline3);
-        sparkline3.render();
+        const sparklineElement3 = document.querySelector('#sparkline-3');
+        if (sparklineElement3) {
+            const sparkline3 = new ApexCharts(
+                sparklineElement3,
+                option_sparkline3
+            );
+
+            sparkline3.render();
+        }
     </script>
     @yield('scripts')
     <!--end::Script-->
