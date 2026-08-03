@@ -14,7 +14,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::with('deanship')->latest('id')->paginate(env('PAGINATION_COUNT', 10));
+        $departments = Department::with('deanship')->withCount('majors')->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.departments.index', compact('departments'));
     }
 

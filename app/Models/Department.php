@@ -32,4 +32,8 @@ class Department extends Model
     {
         return $this->belongsTo(Deanship::class)->withDefault();
     }
+    public function majors()
+    {
+        return $this->hasMany(Major::class);
+    }
 }

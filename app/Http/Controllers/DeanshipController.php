@@ -16,7 +16,7 @@ class DeanshipController extends Controller
      */
     public function index()
     {
-        $deanships = Deanship::latest('id')->withCount('departments')->paginate(env('PAGINATION_COUNT', 10));
+        $deanships = Deanship::latest('id')->withCount('departments')->paginate(config('app.pagination_count', 10));
         return view('cms.deanships.index', compact('deanships'));
     }
 
