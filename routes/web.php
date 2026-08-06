@@ -3,6 +3,7 @@
 use App\Http\Controllers\DeanshipController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\MajorController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,4 +16,5 @@ Route::prefix('cms/admin/')->name('admin.')->group(function () {
     Route::resource('deanships', DeanshipController::class);
     Route::resource('departments', DepartmentController::class);
     Route::resource('majors', MajorController::class);
+    Route::resource('users', UserController::class);
 });

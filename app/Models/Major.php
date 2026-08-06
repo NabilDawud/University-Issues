@@ -27,4 +27,8 @@ class Major extends Model
     {
         return $this->belongsTo(Department::class)->withDefault();
     }
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
 }

@@ -411,21 +411,21 @@
                             <a href="#" class="nav-link align-items-center">
                                 <i class="nav-icon fa-solid fa-user"></i>
                                 <p>
-                                    Admins
+                                    Users
                                     <i class="nav-arrow bi bi-chevron-right"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="./pages/profile.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.users.create') }}" class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create Admin </p>
+                                        <p>Create users </p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./pages/settings.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.users.index') }}" class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Admins </p>
+                                        <p>Index Users </p>
                                     </a>
                                 </li>
                             </ul>
