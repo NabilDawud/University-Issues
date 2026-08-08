@@ -531,10 +531,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./users.html" class="nav-link align-items-center">
+                            <a href="#" class="nav-link align-items-center"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                 <p>Logout</p>
                             </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         </li>
                         {{-- end Authentications --}}
                     </ul>

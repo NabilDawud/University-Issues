@@ -42,4 +42,16 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserType::class)->withDefault();
     }
+    public function isAdmin()
+    {
+        return $this->userType->name === 'Admin';
+    }
+    public function isStudent()
+    {
+        return $this->userType->name === 'Student';
+    }
+    public function isEmployee()
+    {
+        return $this->userType->name === 'Employee';
+    }
 }

@@ -72,7 +72,7 @@ window.showErrors = function(errors){
 
 
             let feedback = input
-                .closest('.col-md-6, .col-md-12, .col-md-4 , .col-md-3')
+                .closest('.col-md-6, .col-md-12, .col-md-4 , .col-md-3 , .fieldsDiv')
                 .querySelector('.invalid-feedback');
 
 
