@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password', 'user_name', 'city', 'phone_number', 'gender', 'is_active', 'profile_image', 'user_type_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * Get the attributes that should be cast.
@@ -44,14 +45,14 @@ class User extends Authenticatable
     }
     public function isAdmin()
     {
-        return $this->userType->name === 'Admin';
+        return $this->userType->id === 1;
     }
     public function isStudent()
     {
-        return $this->userType->name === 'Student';
+        return $this->userType->id === 2;
     }
     public function isEmployee()
     {
-        return $this->userType->name === 'Employee';
+        return $this->userType->id === 3;
     }
 }

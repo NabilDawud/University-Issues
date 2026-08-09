@@ -1,10 +1,10 @@
 @extends('cms.parent')
 
-@section('title', 'Index Users')
+@section('title', 'Index Permissions')
 
-@section('main-title', 'Index Users')
+@section('main-title', 'Index Permissions')
 
-@section('sub-title', 'index users')
+@section('sub-title', 'index permissions')
 
 @section('styles')
 @endsection
@@ -16,8 +16,8 @@
         <div class="card mb-4">
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">Users Table</h3>
-                    <a href="{{ route('admin.users.create') }}" class="btn btn-info">Create User</a>
+                    <h3 class="card-title">Permissions Table</h3>
+                    <a href="{{ route('admin.permissions.create') }}" class="btn btn-info">Create Permission</a>
                 </div>
             </div>
             <!-- /.card-header -->
@@ -26,42 +26,30 @@
                     <thead>
                         <tr class="text-center">
                             <th style="width: 10px">#</th>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>gender</th>
-                            <th>City</th>
-                            <th>User Type (Role)</th>
-                            <th>Status</th>
+                            <th>Permission Name</th>
+                            <th>roles</th>
+                            <th>Users</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($users as $user)
+                        @foreach ($permissions as $permission)
                             <tr class="align-middle text-center">
-                                <td>{{ $user->id }}</td>
+                                <td>{{ $permission->id }}</td>
+                                <td>{{ $permission->name }}</td>
+
                                 <td>
-                                    <img src="{{ $user->profile_image ? asset($user->profile_image) : asset('cms/assets/img/gray-user-profile-icon-png-fP8Q1P.png') }}"
-                                        alt="User Image" class="mr-2 mx-auto"
-                                        style="border: 2px solid #dee2e6; border-radius: 50%; width: 53px; aspect-ratio: 1/1; object-fit: cover;">
-                                </td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td><span class="badge text-bg-{{ $user->gender == 'male' ? 'primary' : 'danger' }}">{{ $user->gender }}</span></td>
-                                <td>{{ $user->city == 'gaza' ? 'Gaza' : ($user->city == 'khan_younis' ? 'Khan Younis' : ($user->city == 'rafah' ? 'Rafah' : ($user->city == 'jabalia' ? 'Jabalia' : ($user->city == 'beit_hanun' ? 'Beit Hanun' : ($user->city == 'beit_lahya' ? 'Beit Lahya' : ($user->city == 'deir_al_balah' ? 'Deir al-Balah' : ($user->city == 'al_zawaid' ? 'Al Zawaid' : ($user->city == 'al_nasirat' ? 'Al Nasirat' : ($user->city == 'al_brij' ? 'Al Brij' : 'Al Mughazi'))))))))) }}
-                                </td>
-                                <td><span
-                                        class="badge text-bg-{{ $user->userType->id == 1 ? 'warning' : ($user->userType->id == 2 ? 'secondary' : 'light') }}">{{ $user->userType->name ?? '-' }} ({{ $user->roles->first()?->name ?? '' }})</span>
-                                </td>
-                                <td><span
-                                        class="badge text-bg-{{ $user->is_active ? 'success' : 'danger' }}">{{ $user->is_active ? 'Active' : 'Inactive' }}</span>
+                                    {{ $permission->roles_count }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.users.show', $user->id) }}"
+                                    {{ $permission->users_count }}
+                                </td>
+                                <td>
+                                    {{-- <a href="{{ route('admin.permissions.show', $permission->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.users.edit', $user->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                    <a href="{{ route('admin.permissions.edit', $permission->id) }}"
+                                        class="btn btn-sm btn-info">Edit</a> --}}
+                                    <form action="{{ route('admin.permissions.destroy', $permission->id) }}" method="POST"
                                         style="display: inline-block;" class="form-delete delete-form">
                                         @csrf
                                         @method('DELETE')
@@ -76,8 +64,8 @@
                 </table>
             </div>
             <!-- /.card-body -->
-            @if ($users->hasPages())
-                <span class="p-2">{{ $users->links() }}</span>
+            @if ($permissions->hasPages())
+                <span class="p-2">{{ $permissions->links() }}</span>
             @endif
         </div>
         <!-- /.card -->

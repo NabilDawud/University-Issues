@@ -367,13 +367,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="./pages/profile.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.roles.create') }}" class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-circle-plus"></i>
                                         <p>Create Role</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./pages/settings.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.roles.index') }}" class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-list"></i>
                                         <p>Index Roles</p>
                                     </a>
@@ -390,13 +390,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="./pages/profile.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.permissions.create') }}" class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-circle-plus"></i>
                                         <p>Create Permission</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="./pages/settings.html" class="nav-link align-items-center">
+                                    <a href="{{ route('admin.permissions.index') }}" class="nav-link align-items-center">
                                         <i class="nav-icon fa-solid fa-list"></i>
                                         <p>Index Permissions</p>
                                     </a>

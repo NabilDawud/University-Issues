@@ -122,6 +122,13 @@
              </div>
          @endisset
 
+         <div class="col-md-4">
+             <label for="role" class="form-label">Role</label>
+             <select class="form-select" id="role" name="role">
+                 <option selected disabled value="">Choose user type first&hellip;</option>
+             </select>
+             <div class="invalid-feedback"></div>
+         </div>
 
          <div class="col-md-4 align-self-end">
              <div class="form-check form-switch d-flex justify-content-center align-items-center">
@@ -148,7 +155,10 @@
              const userTypeSelect = document.querySelector('#user_type_id');
              const employeeFields = document.querySelector('#employee-fields');
              const studentFields = document.querySelector('#student-fields');
+             const roleSelect = document.getElementById('role');
 
+             const selectedRoleId = "{{ isset($user) && $user->roles->first()?->id ?? '' }}";
+            
              function toggleUserFields() {
                  const selectedOption = userTypeSelect.options[userTypeSelect.selectedIndex];
                  const typeName = selectedOption?.dataset?.type || selectedOption?.text?.trim().toLowerCase();
@@ -163,10 +173,52 @@
                  }
              }
 
-             userTypeSelect.addEventListener('change', toggleUserFields);
 
-             // Execute on load for edit forms
-             toggleUserFields();
+             function fetchRoles(userTypeId, initialRoleId = null) {
+                 roleSelect.innerHTML = '<option selected disabled value="">Loading roles...</option>';
+                 roleSelect.disabled = true;
+
+                 if (!userTypeId) return;
+
+                 fetch(`/cms/admin/get-roles-by-user-type/${userTypeId}`)
+                     .then(response => response.json())
+                     .then(roles => {
+                         roleSelect.innerHTML = '<option selected disabled value="">Choose Role...</option>';
+
+                         if (roles.length > 0) {
+                             roles.forEach(role => {
+                                 const option = document.createElement('option');
+                                 option.value = role.id;
+                                 option.textContent = role.name;
+                                 // إذا كانت هذه القيمة هي المحددة مسبقاً للـ user
+                                 if (initialRoleId && String(role.id) === String(initialRoleId)) {
+                                     option.selected = true;
+                                 }
+
+                                 roleSelect.appendChild(option);
+                             });
+                             roleSelect.disabled = false;
+                         } else {
+                             roleSelect.innerHTML = '<option selected disabled value="">No roles found</option>';
+                         }
+                     })
+                     .catch(error => {
+                         console.error('Error fetching roles:', error);
+                         roleSelect.innerHTML =
+                             '<option selected disabled value="">Error loading roles</option>';
+                     });
+             }
+
+             // عند تغيير نوع المستخدم من قبل المدخل
+             userTypeSelect.addEventListener('change', function() {
+                 toggleUserFields();
+                 fetchRoles(this.value);
+             });
+             // عند تحميل الصفحة لأول مرة (Edit)
+             if (userTypeSelect.value) {
+                 toggleUserFields();
+                 fetchRoles(userTypeSelect.value, selectedRoleId);
+             }
          });
      </script>
  @endpush

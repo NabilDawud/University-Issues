@@ -62,9 +62,8 @@ window.showErrors = function(errors){
     // إضافة الأخطاء الجديدة
     Object.keys(errors).forEach(field => {
 
-
-        let input = document.querySelector(`[name="${field}"]`);
-
+        let cleanFieldName = field.split('.')[0];
+        let input = document.querySelector(`[name="${cleanFieldName}"], [name="${cleanFieldName}[]"]`);
 
         if(input){
 
@@ -73,7 +72,7 @@ window.showErrors = function(errors){
 
             let feedback = input
                 .closest('.col-md-6, .col-md-12, .col-md-4 , .col-md-3 , .fieldsDiv')
-                .querySelector('.invalid-feedback');
+                ?.querySelector('.invalid-feedback');
 
 
             if(feedback){
