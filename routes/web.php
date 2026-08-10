@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeanshipController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MajorController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +30,9 @@ Route::prefix('cms/admin/')->middleware(['auth'])->name('admin.')->group(functio
     Route::resource('majors', MajorController::class);
     Route::resource('users', UserController::class);
     Route::get('/get-roles-by-user-type/{userTypeId}', [UserController::class, 'getRolesByUserType'])->name('roles.by-user-type');
+    Route::resource('admins', AdminController::class);
+    Route::resource('students', StudentController::class);
+    Route::resource('employees', EmployeeController::class);
     Route::resource('roles', RoleController::class)->except(['show', 'edit', 'update']);
     Route::get('roles/{role}/permissions', [RoleController::class, 'showPermissionsRole'])->name('roles.permissions');
     Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissionsRole'])->name('roles.permissions.update');

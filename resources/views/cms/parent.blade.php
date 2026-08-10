@@ -430,6 +430,75 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link align-items-center">
+                                <i class="nav-icon fa-solid fa-user-gear"></i>
+                                <p>
+                                    Admins
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.admins.create') }}" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                        <p>Create admins </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.admins.index') }}" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-list"></i>
+                                        <p>Index Admins </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link align-items-center">
+                                <i class="nav-icon fa-solid fa-user-tie"></i>
+                                <p>
+                                    Employees
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.employees.create') }}" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                        <p>Create employees </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.employees.index') }}" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-list"></i>
+                                        <p>Index Employees </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link align-items-center">
+                                <i class="nav-icon fa-solid fa-user-graduate"></i>
+                                <p>
+                                    Students
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.students.create') }}" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                        <p>Create students </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.students.index') }}" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-list"></i>
+                                        <p>Index Students </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         {{-- end User Management --}}
 
                         <br>

@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Major;
 use App\Models\Role;
-use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
-class StudentController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $students = User::where('user_type_id', 2)->with(['student', 'roles'])->latest('id')->paginate(config('app.pagination_count', 10));
-        return view('cms.students.index', compact('students'));
+        $admins = User::with(['roles'])->where('user_type_id', 1)->latest('id')->paginate(config('app.pagination_count', 10));
+        return view('cms.admins.index', compact('admins'));
     }
 
     /**
@@ -28,10 +26,9 @@ class StudentController extends Controller
     public function create()
     {
         $roles = Role::whereHas('userTypes', function ($query) {
-            $query->where('user_types.id', 2);
+            $query->where('user_types.id', 1);
         })->get();
-        $majors = Major::all();
-        return view('cms.students.create', compact('roles', 'majors'));
+        return view('cms.admins.create', compact('roles'));
     }
 
     /**
@@ -52,33 +49,29 @@ class StudentController extends Controller
                 'required',
                 'exists:roles,id',
                 function ($attribute, $value, $fail) use ($request) {
-                    $userTypeId = 2; // Student user type
+                    $userTypeId = 1; // Admin user type
                     $isRoleValidForType = Role::where('id', $value)
                         ->whereHas('userTypes', function ($query) use ($userTypeId) {
                         $query->where('user_types.id', $userTypeId);
                     })
                         ->exists();
+
                     if (!$isRoleValidForType) {
                         $fail('The selected role is not valid for the chosen user type.');
                     }
-                }
+                },
             ],
-            'id_number' => 'required|string|max:255|unique:students,id_number',
-            'student_number' => 'required|string|max:255|unique:students,student_number',
-            'major_id' => 'required|exists:majors,id',
         ];
-
         $validated = $request->validate($rules);
-
         return DB::transaction(function () use ($validated, $request) {
             if ($request->hasFile('profile_image')) {
                 $validated['profile_image'] = $request->file('profile_image')->store('uploads/profiles-images', 'custom');
             }
-            $user = User::create([
+            $admin = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
-                'user_type_id' => 2, // Student user type
+                'user_type_id' => 1, // Admin user type
                 'user_name' => $validated['user_name'],
                 'city' => $validated['city'],
                 'phone_number' => $validated['phone_number'],
@@ -86,15 +79,10 @@ class StudentController extends Controller
                 'is_active' => $request->boolean('is_active'),
                 'profile_image' => $validated['profile_image'] ?? null,
             ]);
-            $user->student()->create([
-                'id_number' => $validated['id_number'],
-                'student_number' => $validated['student_number'],
-                'major_id' => $validated['major_id'],
-            ]);
             $role = Role::find($validated['role']);
-            $user->assignRole($role);
+            $admin->assignRole($role);
             return response()->json([
-                'message' => 'Student created successfully.',
+                'message' => 'Admin created successfully.',
                 'icon' => 'success'
             ], 201);
         });
@@ -105,12 +93,11 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
+        $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
         $roles = Role::whereHas('userTypes', function ($query) {
-            $query->where('user_types.id', 2);
+            $query->where('user_types.id', 1);
         })->get();
-        $majors = Major::all();
-        return view('cms.students.show', compact('student', 'majors', 'roles'));
+        return view('cms.admins.show', compact('admin', 'roles'));
     }
 
     /**
@@ -118,12 +105,11 @@ class StudentController extends Controller
      */
     public function edit(string $id)
     {
-        $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
+        $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
         $roles = Role::whereHas('userTypes', function ($query) {
-            $query->where('user_types.id', 2);
+            $query->where('user_types.id', 1);
         })->get();
-        $majors = Major::all();
-        return view('cms.students.edit', compact('student', 'roles', 'majors'));
+        return view('cms.admins.edit', compact('admin', 'roles'));
     }
 
     /**
@@ -131,10 +117,10 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
+        $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $student->id,
+            'email' => 'required|email|unique:users,email,' . $admin->id,
             'user_name' => 'required|string|max:255',
             'city' => 'required|string|in:gaza,khan_younis,rafah,jabalia,beit_hanun,beit_lahya,deir_al_balah,al_zawaid,al_nasirat,al_brij,al_mughazi',
             'phone_number' => 'required|string|max:20',
@@ -144,30 +130,28 @@ class StudentController extends Controller
                 'required',
                 'exists:roles,id',
                 function ($attribute, $value, $fail) use ($request) {
-                    $userTypeId = 2; // Student user type
+                    $userTypeId = 1; // Admin user type
                     $isRoleValidForType = Role::where('id', $value)
                         ->whereHas('userTypes', function ($query) use ($userTypeId) {
                         $query->where('user_types.id', $userTypeId);
                     })
                         ->exists();
+
                     if (!$isRoleValidForType) {
                         $fail('The selected role is not valid for the chosen user type.');
                     }
-                }
+                },
             ],
-            'id_number' => 'required|string|max:255|unique:students,id_number,' . ($student->student->id ?? ''),
-            'student_number' => 'required|string|max:255|unique:students,student_number,' . ($student->student->id ?? ''),
-            'major_id' => 'required|exists:majors,id',
         ];
         $validated = $request->validate($rules);
-        return DB::transaction(function () use ($validated, $request, $student) {
+        return DB::transaction(function () use ($validated, $request, $admin) {
             if ($request->hasFile('profile_image')) {
-                if ($student->profile_image && File::exists(public_path($student->profile_image))) {
-                    File::delete(public_path($student->profile_image));
+                if ($admin->profile_image && File::exists(public_path($admin->profile_image))) {
+                    File::delete(public_path($admin->profile_image));
                 }
                 $validated['profile_image'] = $request->file('profile_image')->store('uploads/profiles-images', 'custom');
             }
-            $student->update([
+            $admin->update([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'user_name' => $validated['user_name'],
@@ -175,19 +159,14 @@ class StudentController extends Controller
                 'phone_number' => $validated['phone_number'],
                 'gender' => $validated['gender'],
                 'is_active' => $request->boolean('is_active'),
-                'profile_image' => $validated['profile_image'] ?? null,
-            ]);
-            $student->student->update([
-                'id_number' => $validated['id_number'],
-                'student_number' => $validated['student_number'],
-                'major_id' => $validated['major_id'],
+                'profile_image' => $validated['profile_image'] ?? $admin->profile_image,
             ]);
             $role = Role::find($validated['role']);
-            $student->syncRoles([$role]);
+            $admin->syncRoles($role);
             return response()->json([
-                'message' => 'Student updated successfully.',
+                'message' => 'Admin updated successfully.',
                 'icon' => 'success',
-                'redirect' => route('admin.students.index')
+                'redirect' => route('admin.admins.index')
             ], 200);
         });
     }
@@ -197,14 +176,13 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
-        $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
-        if ($student->profile_image && File::exists(public_path($student->profile_image))) {
-            File::delete(public_path($student->profile_image));
+        $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
+        if ($admin->profile_image && File::exists(public_path($admin->profile_image))) {
+            File::delete(public_path($admin->profile_image));
         }
-        $student->student()->delete();
-        $student->delete();
+        $admin->delete();
         return response()->json([
-            'message' => 'Student deleted successfully.',
+            'message' => 'Admin deleted successfully.',
             'icon' => 'success'
         ], 200);
     }
