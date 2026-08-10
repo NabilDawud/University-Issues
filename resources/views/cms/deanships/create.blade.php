@@ -19,7 +19,11 @@
             <form class="ajax-form" action="{{ route('admin.deanships.store') }}" method="POST" novalidate>
                 @include('cms.deanships.form-content')
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Create</button>
+                    @can('Create Deanship')
+                        <button class="btn btn-info" type="submit">Create</button>
+                    @endcan
+                    @can('Index Deanship')
+                    @endcan
                     <a href="{{ route('admin.deanships.index') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>

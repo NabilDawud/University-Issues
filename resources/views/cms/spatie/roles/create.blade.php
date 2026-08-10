@@ -19,8 +19,12 @@
             <form class="ajax-form" action="{{ route('admin.roles.store') }}" method="POST" novalidate>
                 @include('cms.spatie.roles.form-content')
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Create</button>
-                    <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('Create Role')
+                        <button class="btn btn-info" type="submit">Create</button>
+                    @endcan
+                    @can('Index Role')
+                        <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">Cancel</a>
+                    @endcan
                 </div>
             </form>
         </div>

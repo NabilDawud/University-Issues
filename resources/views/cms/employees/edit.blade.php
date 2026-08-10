@@ -23,8 +23,12 @@
                 @include('cms.employees.form-content')
 
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Update</button>
-                    <a href="{{ route('admin.employees.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('Edit Employee')
+                        <button class="btn btn-info" type="submit">Update</button>
+                    @endcan
+                    @can('Index Employee')
+                        <a href="{{ route('admin.employees.index') }}" class="btn btn-secondary">Cancel</a>
+                    @endcan
                 </div>
             </form>
         </div>

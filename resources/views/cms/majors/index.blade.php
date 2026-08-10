@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Majors Table</h3>
-                    <a href="{{ route('admin.majors.create') }}" class="btn btn-info">Create Major</a>
+                    @can('Create Major')
+                        <a href="{{ route('admin.majors.create') }}" class="btn btn-info">Create Major</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -38,7 +40,9 @@
                             <tr class="align-middle text-center">
                                 <td>{{ $major->id }}</td>
                                 <td>{{ $major->trans_name }}</td>
-                                <td><span class="badge text-bg-{{ $major->degree === 'diploma' ? 'warning' : ($major->degree === 'bachelor' ? 'primary' : ($major->degree === 'master' ? 'info' : 'secondary')) }}">{{$major->degree == 'phd' ? 'PhD' : ucfirst($major->degree) }}</span></td>
+                                <td><span
+                                        class="badge text-bg-{{ $major->degree === 'diploma' ? 'warning' : ($major->degree === 'bachelor' ? 'primary' : ($major->degree === 'master' ? 'info' : 'secondary')) }}">{{ $major->degree == 'phd' ? 'PhD' : ucfirst($major->degree) }}</span>
+                                </td>
                                 <td>{{ $major->department->trans_name ?? 'N/A' }}</td>
                                 <td><span
                                         class="badge text-bg-{{ $major->is_active ? 'success' : 'danger' }}">{{ $major->is_active ? 'Active' : 'Inactive' }}</span>
@@ -46,14 +50,18 @@
                                 <td>
                                     <a href="{{ route('admin.majors.show', $major->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.majors.edit', $major->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.majors.destroy', $major->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Edit Major')
+                                        <a href="{{ route('admin.majors.edit', $major->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a>
+                                    @endcan
+                                    @can('Delete Major')
+                                        <form action="{{ route('admin.majors.destroy', $major->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

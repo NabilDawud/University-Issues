@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Departments Table</h3>
-                    <a href="{{ route('admin.departments.create') }}" class="btn btn-info">Create Department</a>
+                    @can('Create Department')
+                        <a href="{{ route('admin.departments.create') }}" class="btn btn-info">Create Department</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -50,14 +52,18 @@
                                 <td>
                                     <a href="{{ route('admin.departments.show', $department->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.departments.edit', $department->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Edit Department')
+                                        <a href="{{ route('admin.departments.edit', $department->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a>
+                                    @endcan
+                                    @can('Delete Department')
+                                        <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

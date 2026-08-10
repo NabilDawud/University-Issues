@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Admins Table</h3>
-                    <a href="{{ route('admin.admins.create') }}" class="btn btn-info">Create Admin</a>
+                    @can('Create Admin')
+                        <a href="{{ route('admin.admins.create') }}" class="btn btn-info">Create Admin</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -47,11 +49,12 @@
                                 </td>
                                 <td>{{ $admin->name }}</td>
                                 <td>{{ $admin->email }}</td>
-                                <td><span class="badge text-bg-{{ $admin->gender == 'male' ? 'primary' : 'danger' }}">{{ $admin->gender }}</span></td>
+                                <td><span
+                                        class="badge text-bg-{{ $admin->gender == 'male' ? 'primary' : 'danger' }}">{{ $admin->gender }}</span>
+                                </td>
                                 <td>{{ $admin->city == 'gaza' ? 'Gaza' : ($admin->city == 'khan_younis' ? 'Khan Younis' : ($admin->city == 'rafah' ? 'Rafah' : ($admin->city == 'jabalia' ? 'Jabalia' : ($admin->city == 'beit_hanun' ? 'Beit Hanun' : ($admin->city == 'beit_lahya' ? 'Beit Lahya' : ($admin->city == 'deir_al_balah' ? 'Deir al-Balah' : ($admin->city == 'al_zawaid' ? 'Al Zawaid' : ($admin->city == 'al_nasirat' ? 'Al Nasirat' : ($admin->city == 'al_brij' ? 'Al Brij' : 'Al Mughazi'))))))))) }}
                                 </td>
-                                <td><span
-                                        class="badge text-bg-warning">{{ $admin->roles->first()?->name ?? '-' }}</span>
+                                <td><span class="badge text-bg-warning">{{ $admin->roles->first()?->name ?? '-' }}</span>
                                 </td>
                                 <td><span
                                         class="badge text-bg-{{ $admin->is_active ? 'success' : 'danger' }}">{{ $admin->is_active ? 'Active' : 'Inactive' }}</span>
@@ -59,14 +62,18 @@
                                 <td>
                                     <a href="{{ route('admin.admins.show', $admin->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.admins.edit', $admin->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.admins.destroy', $admin->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Edit Admin')
+                                        <a href="{{ route('admin.admins.edit', $admin->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a>
+                                    @endcan
+                                    @can('Delete Admin')
+                                        <form action="{{ route('admin.admins.destroy', $admin->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

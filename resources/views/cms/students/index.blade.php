@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Students Table</h3>
-                    <a href="{{ route('admin.students.create') }}" class="btn btn-info">Create Student</a>
+                    @can('Create Student')
+                        <a href="{{ route('admin.students.create') }}" class="btn btn-info">Create Student</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -51,7 +53,9 @@
                                 <td>{{ $student->student->id_number ?? '' }}</td>
                                 <td>{{ $student->student->student_number ?? '' }}</td>
                                 <td>{{ $student->email }}</td>
-                                <td><span class="badge text-bg-{{ $student->gender == 'male' ? 'primary' : 'danger' }}">{{ $student->gender }}</span></td>
+                                <td><span
+                                        class="badge text-bg-{{ $student->gender == 'male' ? 'primary' : 'danger' }}">{{ $student->gender }}</span>
+                                </td>
                                 <td>{{ $student->city == 'gaza' ? 'Gaza' : ($student->city == 'khan_younis' ? 'Khan Younis' : ($student->city == 'rafah' ? 'Rafah' : ($student->city == 'jabalia' ? 'Jabalia' : ($student->city == 'beit_hanun' ? 'Beit Hanun' : ($student->city == 'beit_lahya' ? 'Beit Lahya' : ($student->city == 'deir_al_balah' ? 'Deir al-Balah' : ($student->city == 'al_zawaid' ? 'Al Zawaid' : ($student->city == 'al_nasirat' ? 'Al Nasirat' : ($student->city == 'al_brij' ? 'Al Brij' : 'Al Mughazi'))))))))) }}
                                 </td>
                                 <td><span
@@ -63,14 +67,18 @@
                                 <td>
                                     <a href="{{ route('admin.students.show', $student->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.students.edit', $student->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Edit Student')
+                                        <a href="{{ route('admin.students.edit', $student->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a>
+                                    @endcan
+                                    @can('Delete Student')
+                                        <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

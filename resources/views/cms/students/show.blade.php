@@ -17,9 +17,13 @@
                 <div class=" d-flex justify-between align-items-center">
                     <div class="card-title">Show Student</div>
                     <div>
-                        <a href="{{ route('admin.students.index') }}" class="btn btn-secondary">Back to Students</a>
-                        <a href="{{ route('admin.students.edit', $student->id) }}" class="btn btn-info">Edit
-                            Student</a>
+                        @can('Index Student')
+                            <a href="{{ route('admin.students.index') }}" class="btn btn-secondary">Back to Students</a>
+                        @endcan
+                        @can('Edit Student')
+                            <a href="{{ route('admin.students.edit', $student->id) }}" class="btn btn-info">Edit
+                                Student</a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -161,9 +165,9 @@
 
 @section('scripts')
     <script>
-            let inputs = document.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.setAttribute('disabled', 'disabled');
-            });
+        let inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.setAttribute('disabled', 'disabled');
+        });
     </script>
 @endsection

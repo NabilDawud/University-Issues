@@ -17,9 +17,13 @@
                 <div class=" d-flex justify-between align-items-center">
                     <div class="card-title">Show User</div>
                     <div>
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Back to Users</a>
-                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-info">Edit
-                            User</a>
+                        @can('Index User')
+                            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Back to Users</a>
+                        @endcan
+                        @can('Edit User')
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-info">Edit
+                                User</a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -164,33 +168,33 @@
 
 @section('scripts')
     <script>
-         document.addEventListener('DOMContentLoaded', function() {
-             const userTypeSelect = document.querySelector('#user_type_id');
-             const employeeFields = document.querySelector('#employee-fields');
-             const studentFields = document.querySelector('#student-fields');
-             let inputs = document.querySelectorAll('input, select, textarea');
-             inputs.forEach(input => {
-                 input.setAttribute('disabled', 'disabled');
-             });
+        document.addEventListener('DOMContentLoaded', function() {
+            const userTypeSelect = document.querySelector('#user_type_id');
+            const employeeFields = document.querySelector('#employee-fields');
+            const studentFields = document.querySelector('#student-fields');
+            let inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.setAttribute('disabled', 'disabled');
+            });
 
-             function toggleUserFields() {
-                 const selectedOption = userTypeSelect.options[userTypeSelect.selectedIndex];
-                 const typeName = selectedOption?.dataset?.type || selectedOption?.text?.trim().toLowerCase();
+            function toggleUserFields() {
+                const selectedOption = userTypeSelect.options[userTypeSelect.selectedIndex];
+                const typeName = selectedOption?.dataset?.type || selectedOption?.text?.trim().toLowerCase();
 
-                 employeeFields.classList.add('d-none');
-                 studentFields.classList.add('d-none');
+                employeeFields.classList.add('d-none');
+                studentFields.classList.add('d-none');
 
-                 if (typeName === 'student') {
-                     studentFields.classList.remove('d-none');
-                 } else if (typeName === 'employee') {
-                     employeeFields.classList.remove('d-none');
-                 }
-             }
+                if (typeName === 'student') {
+                    studentFields.classList.remove('d-none');
+                } else if (typeName === 'employee') {
+                    employeeFields.classList.remove('d-none');
+                }
+            }
 
-             userTypeSelect.addEventListener('change', toggleUserFields);
+            userTypeSelect.addEventListener('change', toggleUserFields);
 
-             // Execute on load for edit forms
-             toggleUserFields();
-         });
-     </script>
+            // Execute on load for edit forms
+            toggleUserFields();
+        });
+    </script>
 @endsection

@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Users Table</h3>
-                    <a href="{{ route('admin.users.create') }}" class="btn btn-info">Create User</a>
+                    @can('Create User')
+                        <a href="{{ route('admin.users.create') }}" class="btn btn-info">Create User</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -47,11 +49,15 @@
                                 </td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td><span class="badge text-bg-{{ $user->gender == 'male' ? 'primary' : 'danger' }}">{{ $user->gender }}</span></td>
+                                <td><span
+                                        class="badge text-bg-{{ $user->gender == 'male' ? 'primary' : 'danger' }}">{{ $user->gender }}</span>
+                                </td>
                                 <td>{{ $user->city == 'gaza' ? 'Gaza' : ($user->city == 'khan_younis' ? 'Khan Younis' : ($user->city == 'rafah' ? 'Rafah' : ($user->city == 'jabalia' ? 'Jabalia' : ($user->city == 'beit_hanun' ? 'Beit Hanun' : ($user->city == 'beit_lahya' ? 'Beit Lahya' : ($user->city == 'deir_al_balah' ? 'Deir al-Balah' : ($user->city == 'al_zawaid' ? 'Al Zawaid' : ($user->city == 'al_nasirat' ? 'Al Nasirat' : ($user->city == 'al_brij' ? 'Al Brij' : 'Al Mughazi'))))))))) }}
                                 </td>
                                 <td><span
-                                        class="badge text-bg-{{ $user->userType->id == 1 ? 'warning' : ($user->userType->id == 2 ? 'secondary' : 'light') }}">{{ $user->userType->name ?? '-' }} ({{ $user->roles->first()?->name ?? '' }})</span>
+                                        class="badge text-bg-{{ $user->userType->id == 1 ? 'warning' : ($user->userType->id == 2 ? 'secondary' : 'light') }}">{{ $user->userType->name ?? '-' }}
+                                        ({{ $user->roles->first()?->name ?? '' }})
+                                    </span>
                                 </td>
                                 <td><span
                                         class="badge text-bg-{{ $user->is_active ? 'success' : 'danger' }}">{{ $user->is_active ? 'Active' : 'Inactive' }}</span>
@@ -59,14 +65,18 @@
                                 <td>
                                     <a href="{{ route('admin.users.show', $user->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.users.edit', $user->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Edit User')
+                                        <a href="{{ route('admin.users.edit', $user->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a>
+                                    @endcan
+                                    @can('Delete User')
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

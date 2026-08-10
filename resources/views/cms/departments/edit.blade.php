@@ -23,8 +23,12 @@
                 @include('cms.departments.form-content')
 
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Update</button>
-                    <a href="{{ route('admin.departments.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('Edit Department')
+                        <button class="btn btn-info" type="submit">Update</button>
+                    @endcan
+                    @can('Index Department')
+                        <a href="{{ route('admin.departments.index') }}" class="btn btn-secondary">Cancel</a>
+                    @endcan
                 </div>
             </form>
         </div>

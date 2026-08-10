@@ -356,229 +356,302 @@
                         id="navigation">
 
                         {{-- start Roles and Permissions --}}
-                        <li class="nav-header">Roles & Permissions</li>
-                        <li class="nav-item ">
-                            <a href="#" class="nav-link align-items-center">
-                                <i class="nav-icon fa-solid fa-user-shield"></i>
-                                <p>
-                                    Roles
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.roles.create') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create Role</p>
+                        @canAny(['Index Role', 'Create Role', 'Index Permission', 'Create Permission'])
+                            <li class="nav-header">Roles & Permissions</li>
+                            @canAny(['Index Role', 'Create Role'])
+                                <li class="nav-item ">
+                                    <a href="#" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-user-shield"></i>
+                                        <p>
+                                            Roles
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create Role')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.roles.create') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create Role</p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Role')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.roles.index') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Roles</p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
                                 </li>
+                            @endcanany
+                            @canAny(['Index Permission', 'Create Permission'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.roles.index') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Roles</p>
+                                    <a href="#" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-shield-halved"></i>
+                                        <p>
+                                            Permissions
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create Permission')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.permissions.create') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create Permission</p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Permission')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.permissions.index') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Permissions</p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
                                 </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link align-items-center">
-                                <i class="nav-icon fa-solid fa-shield-halved"></i>
-                                <p>
-                                    Permissions
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.permissions.create') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create Permission</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.permissions.index') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Permissions</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            @endcanany
+                            <br>
+                        @endcanany
                         {{-- end Roles and Permissions --}}
-                        <br>
                         {{-- start User Management --}}
-                        <li class="nav-header">User Management</li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link align-items-center">
-                                <i class="nav-icon fa-solid fa-user"></i>
-                                <p>
-                                    Users
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
+                        @canAny([
+                            'Index User',
+                            'Create User',
+                            'Index Admin',
+                            'Create Admin',
+                            'Index Employee',
+                            'Create
+                            Employee',
+                            'Index Student',
+                            'Create Student',
+                            ])
+                            <li class="nav-header">User Management</li>
+                            @canAny(['Index User', 'Create User'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.users.create') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create users </p>
+                                    <a href="#" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-user"></i>
+                                        <p>
+                                            Users
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create User')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.users.create') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create users </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index User')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.users.index') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Users </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
                                 </li>
+                            @endcanany
+                            @canAny(['Index Admin', 'Create Admin'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.users.index') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Users </p>
+                                    <a href="#" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-user-gear"></i>
+                                        <p>
+                                            Admins
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.admins.create') }}" class="nav-link align-items-center">
+                                                <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                <p>Create admins </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.admins.index') }}" class="nav-link align-items-center">
+                                                <i class="nav-icon fa-solid fa-list"></i>
+                                                <p>Index Admins </p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link align-items-center">
-                                <i class="nav-icon fa-solid fa-user-gear"></i>
-                                <p>
-                                    Admins
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
+                            @endcanany
+                            @canAny(['Index Employee', 'Create Employee'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.admins.create') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create admins </p>
+                                    <a href="#" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-user-tie"></i>
+                                        <p>
+                                            Employees
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.employees.create') }}"
+                                                class="nav-link align-items-center">
+                                                <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                <p>Create employees </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.employees.index') }}"
+                                                class="nav-link align-items-center">
+                                                <i class="nav-icon fa-solid fa-list"></i>
+                                                <p>Index Employees </p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
+                            @endcanany
+                            @canAny(['Index Student', 'Create Student'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.admins.index') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Admins </p>
+                                    <a href="#" class="nav-link align-items-center">
+                                        <i class="nav-icon fa-solid fa-user-graduate"></i>
+                                        <p>
+                                            Students
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.students.create') }}"
+                                                class="nav-link align-items-center">
+                                                <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                <p>Create students </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.students.index') }}"
+                                                class="nav-link align-items-center">
+                                                <i class="nav-icon fa-solid fa-list"></i>
+                                                <p>Index Students </p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link align-items-center">
-                                <i class="nav-icon fa-solid fa-user-tie"></i>
-                                <p>
-                                    Employees
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.employees.create') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create employees </p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.employees.index') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Employees </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link align-items-center">
-                                <i class="nav-icon fa-solid fa-user-graduate"></i>
-                                <p>
-                                    Students
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.students.create') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create students </p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.students.index') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Students </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            @endcanany
+                            <br>
+                        @endcanany
+
                         {{-- end User Management --}}
 
-                        <br>
                         {{-- start Content Management --}}
-                        <li class="nav-header">Content Management</li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link  align-items-center">
-                                <i class="nav-icon fa-solid fa-building-columns"></i>
-                                <p>
-                                    Deanships
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
+                        @canAny([
+                            'Index Deanship',
+                            'Create Deanship',
+                            'Index Department',
+                            'Create Department',
+                            'Index
+                            Major',
+                            'Create Major',
+                            ])
+                            <li class="nav-header">Content Management</li>
+                            @canAny(['Index Deanship', 'Create Deanship'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.deanships.create') }}"
-                                        class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create Deanship </p>
+                                    <a href="#" class="nav-link  align-items-center">
+                                        <i class="nav-icon fa-solid fa-building-columns"></i>
+                                        <p>
+                                            Deanships
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create Deanship')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.deanships.create') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create Deanship </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Deanship')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.deanships.index') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Deanships </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
                                 </li>
+                            @endcanany
+                            @canAny(['Index Department', 'Create Department'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.deanships.index') }}"
-                                        class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Deanships </p>
+                                    <a href="#" class="nav-link  align-items-center">
+                                        <i class="nav-icon fa-solid fa-sitemap"></i>
+                                        <p>
+                                            Departments
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create Department')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.departments.create') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create Department </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Department')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.departments.index') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Departments </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
                                 </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link  align-items-center">
-                                <i class="nav-icon fa-solid fa-sitemap"></i>
-                                <p>
-                                    Departments
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
+                            @endcanany
+                            @canAny(['Index Major', 'Create Major'])
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.departments.create') }}"
-                                        class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create Department </p>
+                                    <a href="#" class="nav-link  align-items-center">
+                                        <i class="nav-icon fa-solid fa-graduation-cap"></i>
+                                        <p>
+                                            Majors
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create Major')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.majors.create') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create Major </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Major')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.majors.index') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Majors </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.departments.index') }}"
-                                        class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Departments </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link  align-items-center">
-                                <i class="nav-icon fa-solid fa-graduation-cap"></i>
-                                <p>
-                                    Majors
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.majors.create') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                        <p>Create Major </p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.majors.index') }}" class="nav-link align-items-center">
-                                        <i class="nav-icon fa-solid fa-list"></i>
-                                        <p>Index Majors </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            @endcanany
+                            <br>
+                        @endcanany
                         {{-- end Content Management --}}
-                        <br>
                         {{-- start Authentications --}}
                         <li class="nav-header">Authentications</li>
                         <li class="nav-item">
@@ -720,8 +793,8 @@
 
     <!--begin::Color Mode Toggle-->
     <!-- The light/dark/auto switcher ships in adminlte.js as the ColorMode
-     module (since 4.1) — no page script needed. Only the no-flash snippet
-     in <head> stays inline, because it must run before first paint. -->
+ module (since 4.1) — no page script needed. Only the no-flash snippet
+ in <head> stays inline, because it must run before first paint. -->
     <!--end::Color Mode Toggle-->
 
     <!-- OPTIONAL SCRIPTS -->

@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Roles Table</h3>
-                    <a href="{{ route('admin.roles.create') }}" class="btn btn-info">Create Role</a>
+                    @can('Create Role')
+                        <a href="{{ route('admin.roles.create') }}" class="btn btn-info">Create Role</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -28,7 +30,9 @@
                             <th style="width: 10px">#</th>
                             <th>Role Name</th>
                             <th>User Types</th>
-                            <th>Permissions</th>
+                            @can('Index Role-Permissions')
+                                <th>Permissions</th>
+                            @endcan
                             <th>Users</th>
                             <th>Action</th>
                         </tr>
@@ -40,26 +44,35 @@
                                 <td>{{ $role->name }}</td>
                                 <td>
                                     @foreach ($role->userTypes as $userType)
-                                        <span class="badge {{ ($userType->id == 1) ? 'bg-secondary' : (($userType->id == 2) ? 'bg-success' : 'bg-info') }}" >{{ $userType->name }}</span>
+                                        <span
+                                            class="badge {{ $userType->id == 1 ? 'bg-secondary' : ($userType->id == 2 ? 'bg-success' : 'bg-info') }}">{{ $userType->name }}</span>
                                     @endforeach
                                 </td>
-                                <td>
-                                    <a href="{{ route('admin.roles.permissions', $role->id) }}" class="text-decoration-none btn btn-primary">Permissions ({{ $role->permissions_count }})</a>
-                                </td>
+                                @can('Index Role-Permissions')
+                                    <td>
+                                        <a href="{{ route('admin.roles.permissions', $role->id) }}"
+                                            class="text-decoration-none btn btn-primary">Permissions
+                                            ({{ $role->permissions_count }})</a>
+                                    </td>
+                                @endcan
                                 <td>
                                     {{ $role->users_count }}
                                 </td>
                                 <td>
                                     {{-- <a href="{{ route('admin.roles.show', $role->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.roles.edit', $role->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a> --}}
-                                    <form action="{{ route('admin.roles.destroy', $role->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                        @can('Edit Role')
+                                        <a href="{{ route('admin.roles.edit', $role->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a> @endcan --}}
+
+                                    @can('Delete Role')
+                                        <form action="{{ route('admin.roles.destroy', $role->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

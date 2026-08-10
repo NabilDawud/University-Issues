@@ -19,8 +19,12 @@
             <form class="ajax-form" action="{{ route('admin.permissions.store') }}" method="POST" novalidate>
                 @include('cms.spatie.permissions.form-content')
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Create</button>
-                    <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('Create Permission')
+                        <button class="btn btn-info" type="submit">Create</button>
+                    @endcan
+                    @can('Index Permission')
+                        <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">Cancel</a>
+                    @endcan
                 </div>
             </form>
         </div>

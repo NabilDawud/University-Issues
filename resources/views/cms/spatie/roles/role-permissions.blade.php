@@ -24,7 +24,8 @@
                     </div>
 
                     <div class="card-body p-4">
-                        <form action="{{ route('admin.roles.permissions.update', $role->id) }}" method="POST" class="ajax-form">
+                        <form action="{{ route('admin.roles.permissions.update', $role->id) }}" method="POST"
+                            class="ajax-form">
                             @csrf
                             @method('PUT')
 
@@ -64,10 +65,11 @@
                                         {{ $allPermissions->isEmpty() ? 'disabled' : '' }}>
                                         <i class="feather-save me-1"></i> Save Changes
                                     </button>
-
-                                    <a href="{{ route('admin.roles.index') }}" class="btn btn-outline-secondary px-4">
-                                        Cancel
-                                    </a>
+                                    @can('Index Role')
+                                        <a href="{{ route('admin.roles.index') }}" class="btn btn-outline-secondary px-4">
+                                            Cancel
+                                        </a>
+                                    @endcan
                                 </div>
                             </div>
                         </form>

@@ -17,9 +17,13 @@
                 <div class=" d-flex justify-between align-items-center">
                     <div class="card-title">Show Major</div>
                     <div>
-                        <a href="{{ route('admin.majors.index') }}" class="btn btn-secondary">Back to Majors</a>
-                        <a href="{{ route('admin.majors.edit', $major->id) }}" class="btn btn-info">Edit
-                            Major</a>
+                        @can('Index Major')
+                            <a href="{{ route('admin.majors.index') }}" class="btn btn-secondary">Back to Majors</a>
+                        @endcan
+                        @can('Edit Major')
+                            <a href="{{ route('admin.majors.edit', $major->id) }}" class="btn btn-info">Edit
+                                Major</a>
+                        @endcan
                     </div>
                 </div>
             </div>

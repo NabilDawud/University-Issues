@@ -19,8 +19,12 @@
             <form class="ajax-form" action="{{ route('admin.admins.store') }}" method="POST" novalidate>
                 @include('cms.admins.form-content')
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Create</button>
-                    <a href="{{ route('admin.admins.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('Create Admin')
+                        <button class="btn btn-info" type="submit">Create</button>
+                    @endcan
+                    @can('Index Admin')
+                        <a href="{{ route('admin.admins.index') }}" class="btn btn-secondary">Cancel</a>
+                    @endcan
                 </div>
             </form>
         </div>

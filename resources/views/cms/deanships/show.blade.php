@@ -17,8 +17,12 @@
                 <div class=" d-flex justify-between align-items-center">
                     <div class="card-title">Show Deanship</div>
                     <div>
-                        <a href="{{ route('admin.deanships.index') }}" class="btn btn-secondary">Back to Deanships</a>
-                        <a href="{{ route('admin.deanships.edit', $deanship->id) }}" class="btn btn-info">Edit Deanship</a>
+                        @can('Index Deanship')
+                            <a href="{{ route('admin.deanships.index') }}" class="btn btn-secondary">Back to Deanships</a>
+                        @endcan
+                        @can('Edit Deanship')
+                            <a href="{{ route('admin.deanships.edit', $deanship->id) }}" class="btn btn-info">Edit Deanship</a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -72,8 +76,11 @@
                         </div>
                         <hr>
                         <div class="col-md-12 d-flex align-items-center justify-between flex-wrap row-gap-2 column-gap-4">
-                            <span class="font-bold text-body-secondary">Created at: <span class="font-medium">{{ $deanship->created_at->format('Y-m-d H:i:s A') }}</span></span>
-                            <span class="font-bold text-body-secondary">Last Updated: <span class="font-medium">{{ $deanship->updated_at->format('Y-m-d H:i:s A') }} ({{ $deanship->updated_at->diffForHumans() }})</span></span>
+                            <span class="font-bold text-body-secondary">Created at: <span
+                                    class="font-medium">{{ $deanship->created_at->format('Y-m-d H:i:s A') }}</span></span>
+                            <span class="font-bold text-body-secondary">Last Updated: <span
+                                    class="font-medium">{{ $deanship->updated_at->format('Y-m-d H:i:s A') }}
+                                    ({{ $deanship->updated_at->diffForHumans() }})</span></span>
                         </div>
                     </div>
 

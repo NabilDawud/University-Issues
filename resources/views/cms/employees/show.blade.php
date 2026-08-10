@@ -17,9 +17,13 @@
                 <div class=" d-flex justify-between align-items-center">
                     <div class="card-title">Show Employee</div>
                     <div>
-                        <a href="{{ route('admin.employees.index') }}" class="btn btn-secondary">Back to Employees</a>
-                        <a href="{{ route('admin.employees.edit', $employee->id) }}" class="btn btn-info">Edit
-                            Employee</a>
+                        @can('Index Employee')
+                            <a href="{{ route('admin.employees.index') }}" class="btn btn-secondary">Back to Employees</a>
+                        @endcan
+                        @can('Edit Employee')
+                            <a href="{{ route('admin.employees.edit', $employee->id) }}" class="btn btn-info">Edit
+                                Employee</a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -64,7 +68,8 @@
                                 <option value="beit_hanun" {{ ($employee->city ?? '') === 'beit_hanun' ? 'selected' : '' }}>
                                     Beit Hanun (بيت حانون)
                                 </option>
-                                <option value="beit_lahya" {{ ($employee->city ?? '') === 'beit_lahya' ? 'selected' : '' }}>
+                                <option value="beit_lahya"
+                                    {{ ($employee->city ?? '') === 'beit_lahya' ? 'selected' : '' }}>
                                     Beit Lahya (بيت لاهيا)
                                 </option>
                                 <option value="deir_al_balah"
@@ -74,13 +79,15 @@
                                 <option value="al_zawaid" {{ ($employee->city ?? '') === 'al_zawaid' ? 'selected' : '' }}>
                                     Al-Zawaid (الزوايدة)
                                 </option>
-                                <option value="al_nasirat" {{ ($employee->city ?? '') === 'al_nasirat' ? 'selected' : '' }}>
+                                <option value="al_nasirat"
+                                    {{ ($employee->city ?? '') === 'al_nasirat' ? 'selected' : '' }}>
                                     Al-Nasirat (النصيرات)
                                 </option>
                                 <option value="al_brij" {{ ($employee->city ?? '') === 'al_brij' ? 'selected' : '' }}>
                                     Al-Brij (البريج)
                                 </option>
-                                <option value="al_mughazi" {{ ($employee->city ?? '') === 'al_mughazi' ? 'selected' : '' }}>
+                                <option value="al_mughazi"
+                                    {{ ($employee->city ?? '') === 'al_mughazi' ? 'selected' : '' }}>
                                     Al-Mughazi (المغازي)
                                 </option>
                             </select>
@@ -161,9 +168,9 @@
 
 @section('scripts')
     <script>
-            let inputs = document.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.setAttribute('disabled', 'disabled');
-            });
+        let inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.setAttribute('disabled', 'disabled');
+        });
     </script>
 @endsection

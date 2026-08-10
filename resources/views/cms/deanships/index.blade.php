@@ -17,12 +17,14 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Deanships Table</h3>
-                    <a href="{{ route('admin.deanships.create') }}" class="btn btn-info">Create Deanship</a>
+                    @can('Create Deanship')
+                        <a href="{{ route('admin.deanships.create') }}" class="btn btn-info">Create Deanship</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body p-0 table-responsive w-100">
-                <table class="table table-striped align-middle m-0 text-nowrap" >
+                <table class="table table-striped align-middle m-0 text-nowrap">
                     <thead>
                         <tr class="text-center">
                             <th style="width: 10px">#</th>
@@ -48,14 +50,18 @@
                                 <td>
                                     <a href="{{ route('admin.deanships.show', $deanship->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.deanships.edit', $deanship->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.deanships.destroy', $deanship->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Edit Deanship')
+                                        <a href="{{ route('admin.deanships.edit', $deanship->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a>
+                                    @endcan
+                                    @can('Delete Deanship')
+                                        <form action="{{ route('admin.deanships.destroy', $deanship->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

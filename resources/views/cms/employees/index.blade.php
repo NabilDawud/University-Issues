@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Employees Table</h3>
-                    <a href="{{ route('admin.employees.create') }}" class="btn btn-info">Create Employee</a>
+                    @can('Create Employee')
+                        <a href="{{ route('admin.employees.create') }}" class="btn btn-info">Create Employee</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -51,11 +53,12 @@
                                 <td>{{ $employee->employee->department->trans_name ?? '' }}</td>
                                 <td>{{ $employee->employee->employee_number ?? '' }}</td>
                                 <td>{{ $employee->email }}</td>
-                                <td><span class="badge text-bg-{{ $employee->gender == 'male' ? 'primary' : 'danger' }}">{{ $employee->gender }}</span></td>
+                                <td><span
+                                        class="badge text-bg-{{ $employee->gender == 'male' ? 'primary' : 'danger' }}">{{ $employee->gender }}</span>
+                                </td>
                                 <td>{{ $employee->city == 'gaza' ? 'Gaza' : ($employee->city == 'khan_younis' ? 'Khan Younis' : ($employee->city == 'rafah' ? 'Rafah' : ($employee->city == 'jabalia' ? 'Jabalia' : ($employee->city == 'beit_hanun' ? 'Beit Hanun' : ($employee->city == 'beit_lahya' ? 'Beit Lahya' : ($employee->city == 'deir_al_balah' ? 'Deir al-Balah' : ($employee->city == 'al_zawaid' ? 'Al Zawaid' : ($employee->city == 'al_nasirat' ? 'Al Nasirat' : ($employee->city == 'al_brij' ? 'Al Brij' : 'Al Mughazi'))))))))) }}
                                 </td>
-                                <td><span
-                                        class="badge text-bg-light">{{ $employee->roles->first()?->name ?? '' }}</span>
+                                <td><span class="badge text-bg-light">{{ $employee->roles->first()?->name ?? '' }}</span>
                                 </td>
                                 <td><span
                                         class="badge text-bg-{{ $employee->is_active ? 'success' : 'danger' }}">{{ $employee->is_active ? 'Active' : 'Inactive' }}</span>
@@ -63,14 +66,18 @@
                                 <td>
                                     <a href="{{ route('admin.employees.show', $employee->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>
-                                    <a href="{{ route('admin.employees.edit', $employee->id) }}"
-                                        class="btn btn-sm btn-info">Edit</a>
-                                    <form action="{{ route('admin.employees.destroy', $employee->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Edit Employee')
+                                        <a href="{{ route('admin.employees.edit', $employee->id) }}"
+                                            class="btn btn-sm btn-info">Edit</a>
+                                    @endcan
+                                    @can('Delete Employee')
+                                        <form action="{{ route('admin.employees.destroy', $employee->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

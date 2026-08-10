@@ -16,15 +16,19 @@
             <div class="card-header">
                 <div class="card-title">Edit User</div>
             </div>
-            <form class="needs-validation ajax-form" action="{{ route('admin.users.update', $user->id) }}"
-                method="POST" novalidate>
+            <form class="needs-validation ajax-form" action="{{ route('admin.users.update', $user->id) }}" method="POST"
+                novalidate>
                 @csrf
                 @method('PUT')
                 @include('cms.users.form-content')
 
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Update</button>
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('Edit User')
+                        <button class="btn btn-info" type="submit">Update</button>
+                    @endcan
+                    @can('Index User')
+                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancel</a>
+                    @endcan
                 </div>
             </form>
         </div>

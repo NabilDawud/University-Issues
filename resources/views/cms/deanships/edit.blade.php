@@ -23,8 +23,12 @@
                 @include('cms.deanships.form-content')
 
                 <div class="card-footer">
-                    <button class="btn btn-info" type="submit">Update</button>
-                    <a href="{{ route('admin.deanships.index') }}" class="btn btn-secondary">Cancel</a>
+                    @can('Edit Deanship')
+                        <button class="btn btn-info" type="submit">Update</button>
+                    @endcan
+                    @can('Index Deanship')
+                        <a href="{{ route('admin.deanships.index') }}" class="btn btn-secondary">Cancel</a>
+                    @endcan
                 </div>
             </form>
         </div>

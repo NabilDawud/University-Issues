@@ -17,7 +17,9 @@
             <div class="card-header">
                 <div class=" d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Permissions Table</h3>
-                    <a href="{{ route('admin.permissions.create') }}" class="btn btn-info">Create Permission</a>
+                    @can('Create Permission')
+                        <a href="{{ route('admin.permissions.create') }}" class="btn btn-info">Create Permission</a>
+                    @endcan
                 </div>
             </div>
             <!-- /.card-header -->
@@ -49,12 +51,14 @@
                                         class="btn btn-sm btn-primary">Show</a>
                                     <a href="{{ route('admin.permissions.edit', $permission->id) }}"
                                         class="btn btn-sm btn-info">Edit</a> --}}
-                                    <form action="{{ route('admin.permissions.destroy', $permission->id) }}" method="POST"
-                                        style="display: inline-block;" class="form-delete delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @can('Delete Permission')
+                                        <form action="{{ route('admin.permissions.destroy', $permission->id) }}" method="POST"
+                                            style="display: inline-block;" class="form-delete delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

@@ -17,9 +17,13 @@
                 <div class=" d-flex justify-between align-items-center">
                     <div class="card-title">Show Department</div>
                     <div>
-                        <a href="{{ route('admin.departments.index') }}" class="btn btn-secondary">Back to Departments</a>
-                        <a href="{{ route('admin.departments.edit', $department->id) }}" class="btn btn-info">Edit
-                            Department</a>
+                        @can('Index Department')
+                            <a href="{{ route('admin.departments.index') }}" class="btn btn-secondary">Back to Departments</a>
+                        @endcan
+                        @can('Edit Department')
+                            <a href="{{ route('admin.departments.edit', $department->id) }}" class="btn btn-info">Edit
+                                Department</a>
+                        @endcan
                     </div>
                 </div>
             </div>
