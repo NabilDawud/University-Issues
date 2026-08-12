@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
@@ -16,6 +17,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAnyOfType', [User::class, 3]);
         $employees = User::where('user_type_id', 3)->with(['roles', 'employee.department'])->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.employees.index', compact('employees'));
     }
@@ -25,6 +27,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
+        Gate::authorize('createOfType', [User::class, 3]);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 3);
         })->get();
@@ -37,6 +40,7 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('createOfType', [User::class, 3]);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -106,6 +110,7 @@ class EmployeeController extends Controller
     public function show(string $id)
     {
         $employee = User::where('user_type_id', 3)->with(['employee.department'])->findOrFail($id);
+        Gate::authorize('view', $employee);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 3);
         })->get();
@@ -119,6 +124,7 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         $employee = User::where('user_type_id', 3)->with(['employee.department'])->findOrFail($id);
+        Gate::authorize('update', $employee);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 3);
         })->get();
@@ -132,6 +138,7 @@ class EmployeeController extends Controller
     public function update(Request $request, string $id)
     {
         $employee = User::where('user_type_id', 3)->with(['employee.department'])->findOrFail($id);
+        Gate::authorize('update', $employee);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $employee->id,
@@ -200,6 +207,7 @@ class EmployeeController extends Controller
     public function destroy(string $id)
     {
         $employee = User::where('user_type_id', 3)->with('employee')->findOrFail($id);
+        Gate::authorize('delete', $employee);
         if ($employee->profile_image && File::exists(public_path($employee->profile_image))) {
             File::delete(public_path($employee->profile_image));
         }

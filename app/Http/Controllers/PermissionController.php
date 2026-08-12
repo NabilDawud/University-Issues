@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
@@ -12,6 +13,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Permission::class);
+        // Gate::authorize('Index Permission');
         $permissions = Permission::withCount(['roles', 'users'])->latest()->paginate(config('app.pagination_count', 10));
         return view('cms.spatie.permissions.index', compact('permissions'));
     }
@@ -21,6 +24,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Permission::class);
         return view('cms.spatie.permissions.create');
     }
 
@@ -29,6 +33,7 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Permission::class);
         $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name',
         ]);
@@ -46,7 +51,7 @@ class PermissionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        Gate::authorize('view', Permission::class);
     }
 
     /**
@@ -54,7 +59,8 @@ class PermissionController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $permission = Permission::findOrFail($id);
+        Gate::authorize('update', Permission::class);
     }
 
     /**
@@ -62,7 +68,18 @@ class PermissionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // $permission = Permission::findOrFail($id);
+        Gate::authorize('update', Permission::class);
+
+        // $request->validate([
+        //     'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
+        // ]);
+
+        // $permission->update([
+        //     'name' => $request->input('name'),
+        // ]);
+
+        // return response()->json(['message' => 'Permission updated successfully.', 'icon' => 'success'], 200);
     }
 
     /**
@@ -70,6 +87,7 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
+        Gate::authorize('delete', $permission);
         $permission->delete();
 
         return response()->json(['message' => 'Permission deleted successfully.', 'icon' => 'success'], 200);

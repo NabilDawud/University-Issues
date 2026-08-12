@@ -10,6 +10,7 @@ use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -20,6 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', User::class);
         $users = User::with(['userType', 'student', 'employee', 'roles'])->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.users.index', compact('users'));
     }
@@ -29,6 +31,7 @@ class UserController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', User::class);
         $userTypes = UserType::all();
         $departments = Department::all();
         $majors = Major::all();
@@ -47,6 +50,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', User::class);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -142,6 +146,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        Gate::authorize('view', $user);
         $userTypes = UserType::all();
         $departments = Department::all();
         $majors = Major::all();
@@ -153,6 +158,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        Gate::authorize('update', $user);
         $userTypes = UserType::all();
         $departments = Department::all();
         $majors = Major::all();
@@ -164,6 +170,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
@@ -284,7 +291,16 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        File::delete(public_path($user->profile_image));
+        Gate::authorize('delete', $user);
+        if ($user->profile_image && File::exists(public_path($user->profile_image))) {
+            File::delete(public_path($user->profile_image));
+        }
+        if ($user->student) {
+            $user->student()->delete();
+        }
+        if ($user->employee) {
+            $user->employee()->delete();
+        }
         $user->delete();
         return response()->json([
             'message' => 'User deleted successfully.',

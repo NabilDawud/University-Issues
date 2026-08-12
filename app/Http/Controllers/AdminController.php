@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -16,6 +17,7 @@ class AdminController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAnyOfType', [User::class, 1]);
         $admins = User::with(['roles'])->where('user_type_id', 1)->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.admins.index', compact('admins'));
     }
@@ -25,6 +27,7 @@ class AdminController extends Controller
      */
     public function create()
     {
+        Gate::authorize('createOfType', [User::class, 1]);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 1);
         })->get();
@@ -36,6 +39,7 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('createOfType', [User::class, 1]);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -94,6 +98,7 @@ class AdminController extends Controller
     public function show(string $id)
     {
         $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
+        Gate::authorize('view', $admin);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 1);
         })->get();
@@ -106,6 +111,7 @@ class AdminController extends Controller
     public function edit(string $id)
     {
         $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
+        Gate::authorize('update', $admin);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 1);
         })->get();
@@ -118,6 +124,7 @@ class AdminController extends Controller
     public function update(Request $request, string $id)
     {
         $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
+        Gate::authorize('update', $admin);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $admin->id,
@@ -177,6 +184,7 @@ class AdminController extends Controller
     public function destroy(string $id)
     {
         $admin = User::with(['roles'])->where('user_type_id', 1)->findOrFail($id);
+        Gate::authorize('delete', $admin);
         if ($admin->profile_image && File::exists(public_path($admin->profile_image))) {
             File::delete(public_path($admin->profile_image));
         }

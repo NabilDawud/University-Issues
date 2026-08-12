@@ -61,10 +61,12 @@
 
                             <div class="row mt-5">
                                 <div class="col-12 d-flex justify-content-between border-top pt-4">
-                                    <button type="submit" class="btn btn-success px-5 fw-bold"
-                                        {{ $allPermissions->isEmpty() ? 'disabled' : '' }}>
-                                        <i class="feather-save me-1"></i> Save Changes
-                                    </button>
+                                    @can('Edit Role-Permissions')
+                                        <button type="submit" class="btn btn-success px-5 fw-bold"
+                                            {{ $allPermissions->isEmpty() ? 'disabled' : '' }}>
+                                            <i class="feather-save me-1"></i> Save Changes
+                                        </button>
+                                    @endcan
                                     @can('Index Role')
                                         <a href="{{ route('admin.roles.index') }}" class="btn btn-outline-secondary px-4">
                                             Cancel

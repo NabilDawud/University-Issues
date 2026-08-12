@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Deanship;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 use function Pest\Laravel\delete;
@@ -16,6 +17,7 @@ class DeanshipController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Deanship::class);
         $deanships = Deanship::latest('id')->withCount('departments')->paginate(config('app.pagination_count', 10));
         return view('cms.deanships.index', compact('deanships'));
     }
@@ -25,6 +27,7 @@ class DeanshipController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Deanship::class);
         return view('cms.deanships.create');
     }
 
@@ -33,6 +36,7 @@ class DeanshipController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Deanship::class);
         $validatedData = $request->validate([
             'name_en' => 'required|string|max:255',
             'name_ar' => 'required|string|max:255',
@@ -67,6 +71,7 @@ class DeanshipController extends Controller
      */
     public function show(Deanship $deanship)
     {
+        Gate::authorize('view', $deanship);
         return view('cms.deanships.show', compact('deanship'));
     }
 
@@ -83,7 +88,7 @@ class DeanshipController extends Controller
      */
     public function update(Request $request, Deanship $deanship)
     {
-        // dd($request->all() , $request->boolean('is_active'));
+        Gate::authorize('update', $deanship);
         $validatedData = $request->validate([
             'name_en' => 'required|string|max:255',
             'name_ar' => 'required|string|max:255',
@@ -128,6 +133,7 @@ class DeanshipController extends Controller
      */
     public function destroy(Deanship $deanship)
     {
+        Gate::authorize('delete', $deanship);
         $deanship->delete();
         return response()->json([
             'message' => 'Deanship deleted successfully.',

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
@@ -17,6 +18,7 @@ class StudentController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAnyOfType', [User::class, 2]);
         $students = User::where('user_type_id', 2)->with(['student', 'roles'])->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.students.index', compact('students'));
     }
@@ -26,6 +28,7 @@ class StudentController extends Controller
      */
     public function create()
     {
+        Gate::authorize('createOfType', [User::class, 2]);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 2);
         })->get();
@@ -38,6 +41,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('createOfType', [User::class, 2]);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -105,6 +109,7 @@ class StudentController extends Controller
     public function show(string $id)
     {
         $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
+        Gate::authorize('view', $student);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 2);
         })->get();
@@ -118,6 +123,7 @@ class StudentController extends Controller
     public function edit(string $id)
     {
         $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
+        Gate::authorize('update', $student);
         $roles = Role::whereHas('userTypes', function ($query) {
             $query->where('user_types.id', 2);
         })->get();
@@ -131,6 +137,7 @@ class StudentController extends Controller
     public function update(Request $request, string $id)
     {
         $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
+        Gate::authorize('update', $student);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $student->id,
@@ -197,6 +204,7 @@ class StudentController extends Controller
     public function destroy(string $id)
     {
         $student = User::where('user_type_id', 2)->with('student')->findOrFail($id);
+        Gate::authorize('delete', $student);
         if ($student->profile_image && File::exists(public_path($student->profile_image))) {
             File::delete(public_path($student->profile_image));
         }

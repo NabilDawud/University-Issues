@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
@@ -15,6 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Role::class);
         $roles = Role::latest()->with(['userTypes'])->withCount(['permissions', 'users'])->paginate(config('app.pagination_count', 10));
         return view('cms.spatie.roles.index', compact('roles'));
     }
@@ -24,6 +26,7 @@ class RoleController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Role::class);
         $users_type = UserType::all();
         return view('cms.spatie.roles.create', compact('users_type'));
     }
@@ -33,6 +36,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Role::class);
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
             'user_type' => 'required|array|min:1', 
@@ -57,6 +61,7 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
+        Gate::authorize('view', Role::class);
         //
     }
 
@@ -65,7 +70,8 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $role = Role::with(['userTypes'])->findOrFail($id);
+        Gate::authorize('update', $role);
     }
 
     /**
@@ -81,17 +87,20 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        Gate::authorize('delete', $role);
         $role->delete();
         return response()->json(['message' => 'Role deleted successfully.', 'icon' => 'success'], 200);
     }
     public function showPermissionsRole(Role $role)
     {
+        Gate::authorize('showPermissionsRole', $role);
         $rolePermissions = $role->permissions()->pluck('name')->toArray();
         $allPermissions = Permission::all();
         return view('cms.spatie.roles.role-permissions', compact('role', 'rolePermissions', 'allPermissions'));
     }
     public function updatePermissionsRole(Request $request, Role $role)
     {
+        Gate::authorize('updatePermissionsRole', $role);
         $request->validate([
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,name',

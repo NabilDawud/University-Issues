@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Major;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class MajorController extends Controller
 {
@@ -13,6 +14,7 @@ class MajorController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Major::class);
         $majors = Major::with('department')->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.majors.index', compact('majors'));
     }
@@ -22,6 +24,7 @@ class MajorController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Major::class);
         $departments = Department::all();
         return view('cms.majors.create', compact('departments'));
     }
@@ -31,6 +34,7 @@ class MajorController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Major::class);
         $validatedData = $request->validate([
             'name_ar' => 'required|string|max:255',
             'name_en' => 'required|string|max:255',
@@ -57,6 +61,7 @@ class MajorController extends Controller
      */
     public function show(Major $major)
     {
+        Gate::authorize('view', $major);
         $departments = Department::all();
         return view('cms.majors.show', compact('major', 'departments'));
     }
@@ -66,6 +71,7 @@ class MajorController extends Controller
      */
     public function edit(Major $major)
     {
+        Gate::authorize('update', $major);
         $departments = Department::all();
         return view('cms.majors.edit', compact('major', 'departments'));
     }
@@ -75,6 +81,7 @@ class MajorController extends Controller
      */
     public function update(Request $request, Major $major)
     {
+        Gate::authorize('update', $major);
         $validatedData = $request->validate([
             'name_ar' => 'required|string|max:255',
             'name_en' => 'required|string|max:255',
@@ -102,6 +109,7 @@ class MajorController extends Controller
      */
     public function destroy(Major $major)
     {
+        Gate::authorize('delete', $major);
         $major->delete();
         return response()->json([
             'message' => 'Major deleted successfully.',

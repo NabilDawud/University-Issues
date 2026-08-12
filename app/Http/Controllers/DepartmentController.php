@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Deanship;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class DepartmentController extends Controller
@@ -14,6 +15,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Department::class);
         $departments = Department::with('deanship')->withCount('majors')->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.departments.index', compact('departments'));
     }
@@ -23,6 +25,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Department::class);
         $deanships = Deanship::all();
         return view('cms.departments.create', compact('deanships'));
     }
@@ -32,6 +35,7 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Department::class);
         $validatedData = $request->validate([
             'name_en' => 'required|string|max:255',
             'name_ar' => 'required|string|max:255',
@@ -66,6 +70,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
+        Gate::authorize('view', $department);
         $deanships = Deanship::all();
         return view('cms.departments.show', compact('department', 'deanships'));
     }
@@ -75,6 +80,7 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
+        Gate::authorize('update', $department);
         $deanships = Deanship::all();
         return view('cms.departments.edit', compact('department', 'deanships'));
     }
@@ -84,6 +90,7 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
+        Gate::authorize('update', $department);
         $validatedData = $request->validate([
             'name_en' => 'required|string|max:255',
             'name_ar' => 'required|string|max:255',
@@ -129,6 +136,7 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
+        Gate::authorize('delete', $department);
         $department->delete();
         return response()->json([
             'message' => 'Department deleted successfully.',

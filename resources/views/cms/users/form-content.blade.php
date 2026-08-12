@@ -157,7 +157,7 @@
              const studentFields = document.querySelector('#student-fields');
              const roleSelect = document.getElementById('role');
 
-             const selectedRoleId = "{{ isset($user) && $user->roles->first()?->id ?? '' }}";
+             const selectedRoleId = "{{ isset($user) ? optional($user->roles->first())->id : '' }}";
             
              function toggleUserFields() {
                  const selectedOption = userTypeSelect.options[userTypeSelect.selectedIndex];
