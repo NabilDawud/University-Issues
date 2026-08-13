@@ -48,7 +48,20 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->can('Show '. ucfirst($this->typeSlug($model->user_type_id))) || $user->id === $model->id;
+        if ($user->id === $model->id) {
+            return true;
+        }
+        // if (!$user->can('Show ' . ucfirst($this->typeSlug($model->user_type_id)))) {
+        //     return false;
+        // }
+        if ($model->user_type_id === 2) {
+            return $this->canAccessStudent($user, $model);
+        }
+        if ($model->user_type_id === 3) {
+            return $this->canAccessEmployee($user, $model);
+        }
+
+        return true;
     }
 
     /**
@@ -56,7 +69,20 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->can('Edit '. ucfirst($this->typeSlug($model->user_type_id))) || $user->id === $model->id;
+        if ($user->id === $model->id) {
+            return true;
+        }
+        if (!$user->can('Edit ' . ucfirst($this->typeSlug($model->user_type_id)))) {
+            return false;
+        }
+        if ($model->user_type_id === 2) {
+            return $this->canAccessStudent($user, $model);
+        }
+        if ($model->user_type_id === 3) {
+            return $this->canAccessEmployee($user, $model);
+        }
+
+        return true;
     }
 
     /**
@@ -64,9 +90,47 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->can('Delete '. ucfirst($this->typeSlug($model->user_type_id))) && $user->id !== $model->id;
+        if ($user->id === $model->id) {
+            return false;
+        }
+        if (!$user->can('Delete ' . ucfirst($this->typeSlug($model->user_type_id)))) {
+            return false;
+        }
+        if ($model->user_type_id === 2) {
+            return $this->canAccessStudent($user, $model);
+        }
+        if ($model->user_type_id === 3) {
+            return $this->canAccessEmployee($user, $model);
+        }
+        return true;
+    }
+    private function canAccessEmployee(User $user, User $employeeUser): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+        if ($user->hasRole('Dean')) {
+            return $user->employee?->department?->deanship_id === $employeeUser->employee?->department?->deanship_id;
+        }
+        if ($user->hasRole('Department Head')) {
+            return ($user->employee?->department_id === $employeeUser->employee?->department_id) && (!$employeeUser->hasRole('Dean'));
+        }
+        return false;
     }
 
+    private function canAccessStudent(User $user, User $studentUser): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+        if ($user->hasRole('Dean')) {
+            return $user->employee?->department?->deanship_id === $studentUser->student?->major?->department?->deanship_id;
+        }
+        if ($user->hasRole('Department Head') || $user->hasRole('Instructor') || $user->hasRole('Assistant')) {
+            return $user->employee?->department_id === $studentUser->student?->major?->department_id;
+        }
+        return false;
+    }
     /**
      * Determine whether the user can restore the model.
      */

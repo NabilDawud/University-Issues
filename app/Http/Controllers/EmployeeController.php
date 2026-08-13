@@ -18,7 +18,7 @@ class EmployeeController extends Controller
     public function index()
     {
         Gate::authorize('viewAnyOfType', [User::class, 3]);
-        $employees = User::where('user_type_id', 3)->with(['roles', 'employee.department'])->latest('id')->paginate(config('app.pagination_count', 10));
+        $employees = User::accessibleEmployees()->where('user_type_id', 3)->with(['roles', 'employee.department'])->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.employees.index', compact('employees'));
     }
 

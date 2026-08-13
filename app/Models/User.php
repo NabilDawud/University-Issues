@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password', 'user_name', 'city', 'phone_number', 'gender', 'is_active', 'profile_image', 'user_type_id'])]
@@ -54,5 +55,52 @@ class User extends Authenticatable
     public function isEmployee()
     {
         return $this->userType->id === 3;
+    }
+    public function scopeAccessibleEmployees($query)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user) {
+            return $query->whereNull('id');
+        }
+        if ($user->isAdmin()) {
+            return $query;
+        }
+        if ($user->hasRole('Dean')) {
+            return $query->whereHas('employee.department', function ($q) use ($user) {
+                $q->where('deanship_id', $user->employee?->department?->deanship_id);
+            });
+        }
+        if ($user->hasRole('Department Head')) {
+            return $query->whereHas('employee', function ($q) use ($user) {
+                $q->where('department_id', $user->employee?->department_id);
+            });
+        }
+        return $query->where('id', $user->id);
+    }
+    public function scopeAccessibleStudents($query)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user) {
+            return $query->whereNull('id');
+        }
+        if ($user->isAdmin()) {
+            return $query;
+        }
+        if ($user->hasRole('Dean')) {
+            return $query->whereHas('student.major.department', function ($q) use ($user) {
+                $q->where('deanship_id', $user->employee?->department?->deanship_id);
+            });
+        }
+        // return $query->where('id', $user->id);
+
+        if ($user->hasRole('Department Head') || $user->hasRole('Instructor') || $user->hasRole('Assistant')) {
+            return $query->whereHas('student.major', function ($q) use ($user) {
+                $q->where('department_id', $user->employee?->department_id);
+            });
+        }
+
+        return $query->where('id', $user->id);
     }
 }

@@ -19,7 +19,7 @@ class StudentController extends Controller
     public function index()
     {
         Gate::authorize('viewAnyOfType', [User::class, 2]);
-        $students = User::where('user_type_id', 2)->with(['student', 'roles'])->latest('id')->paginate(config('app.pagination_count', 10));
+        $students = User::accessibleStudents()->where('user_type_id', 2)->with(['student', 'roles'])->latest('id')->paginate(config('app.pagination_count', 10));
         return view('cms.students.index', compact('students'));
     }
 
@@ -46,7 +46,7 @@ class StudentController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'user_name' => 'required|string|max:255',
+            'user_name' => 'required|string|unique:users,user_name|max:255',
             'city' => 'required|string|in:gaza,khan_younis,rafah,jabalia,beit_hanun,beit_lahya,deir_al_balah,al_zawaid,al_nasirat,al_brij,al_mughazi',
             'phone_number' => 'required|string|max:20',
             'gender' => 'required|in:male,female',
@@ -141,7 +141,7 @@ class StudentController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $student->id,
-            'user_name' => 'required|string|max:255',
+            'user_name' => ['required', 'string', 'unique:users,user_name,' . $student->id, 'max:255'],
             'city' => 'required|string|in:gaza,khan_younis,rafah,jabalia,beit_hanun,beit_lahya,deir_al_balah,al_zawaid,al_nasirat,al_brij,al_mughazi',
             'phone_number' => 'required|string|max:20',
             'gender' => 'required|in:male,female',

@@ -284,18 +284,18 @@
                     <!--begin::User Menu Dropdown-->
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="{{ asset('cms/assets/img/user2-160x160.jpg') }}"
-                                class="user-image rounded-circle shadow" alt="Alexander Pierce" />
-                            <span class="d-none d-md-inline">Alexander Pierce</span>
+                            <img src="{{ asset(Auth::user()->profile_image) }}"
+                                class="user-image rounded-circle shadow" alt="{{ Auth::user()->name }}" />
+                            <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                             <!--begin::User Image-->
                             <li class="user-header text-bg-primary">
-                                <img src="{{ asset('cms/assets/img/user2-160x160.jpg') }}"
-                                    class="rounded-circle shadow" alt="Alexander Pierce" />
+                                <img src="{{ asset(Auth::user()->profile_image) }}" class="rounded-circle shadow"
+                                    alt="{{ Auth::user()->name }}" />
                                 <p>
-                                    Alexander Pierce - Web Developer
-                                    <small>Member since Nov. 2023</small>
+                                    {{ Auth::user()->name }} - {{ Auth::user()->roles->pluck('name')->first() }}
+                                    <small>Member since {{ Auth::user()->created_at->format('M. Y') }}</small>
                                 </p>
                             </li>
                             <!--end::User Image-->
@@ -473,18 +473,22 @@
                                         </p>
                                     </a>
                                     <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('admin.admins.create') }}" class="nav-link align-items-center">
-                                                <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                                <p>Create admins </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ route('admin.admins.index') }}" class="nav-link align-items-center">
-                                                <i class="nav-icon fa-solid fa-list"></i>
-                                                <p>Index Admins </p>
-                                            </a>
-                                        </li>
+                                        @can('Create Admin')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.admins.create') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create admins </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Admin')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.admins.index') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Admins </p>
+                                                </a>
+                                            </li>
+                                        @endcan
                                     </ul>
                                 </li>
                             @endcanany
@@ -498,20 +502,24 @@
                                         </p>
                                     </a>
                                     <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('admin.employees.create') }}"
-                                                class="nav-link align-items-center">
-                                                <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                                <p>Create employees </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ route('admin.employees.index') }}"
-                                                class="nav-link align-items-center">
-                                                <i class="nav-icon fa-solid fa-list"></i>
-                                                <p>Index Employees </p>
-                                            </a>
-                                        </li>
+                                        @can('Create Employee')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.employees.create') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create employees </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Employee')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.employees.index') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Employees </p>
+                                                </a>
+                                            </li>
+                                        @endcan
                                     </ul>
                                 </li>
                             @endcanany
@@ -525,20 +533,25 @@
                                         </p>
                                     </a>
                                     <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('admin.students.create') }}"
-                                                class="nav-link align-items-center">
-                                                <i class="nav-icon fa-solid fa-circle-plus"></i>
-                                                <p>Create students </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ route('admin.students.index') }}"
-                                                class="nav-link align-items-center">
-                                                <i class="nav-icon fa-solid fa-list"></i>
-                                                <p>Index Students </p>
-                                            </a>
-                                        </li>
+                                        @can('Create Student')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.students.create') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create students </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Student')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.students.index') }}"
+                                                    class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Students </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+
                                     </ul>
                                 </li>
                             @endcanany
