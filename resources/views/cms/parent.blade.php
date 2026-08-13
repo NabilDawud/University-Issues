@@ -662,6 +662,35 @@
                                     </ul>
                                 </li>
                             @endcanany
+                            @canAny(['Index Category', 'Create Category'])
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link  align-items-center">
+                                        <i class="nav-icon fa-solid fa-layer-group"></i>
+                                        <p>
+                                            Categories
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create Category')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.categories.create') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create Category </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Category')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.categories.index') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Categories </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
                             <br>
                         @endcanany
                         {{-- end Content Management --}}

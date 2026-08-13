@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DeanshipController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
@@ -37,4 +38,5 @@ Route::prefix('cms/admin/')->middleware(['auth'])->name('admin.')->group(functio
     Route::get('roles/{role}/permissions', [RoleController::class, 'showPermissionsRole'])->name('roles.permissions');
     Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissionsRole'])->name('roles.permissions.update');
     Route::resource('permissions', PermissionController::class)->except(['show', 'edit', 'update']);
+    Route::resource('categories', CategoryController::class);
 });

@@ -75,7 +75,13 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'Show Employee', 'guard_name' => 'web']);
         Permission::create(['name' => 'Edit Employee', 'guard_name' => 'web']);
         Permission::create(['name' => 'Delete Employee', 'guard_name' => 'web']);
-        
+
+        Permission::create(['name' => 'Create Category', 'guard_name' => 'web']);
+        Permission::create(['name' => 'Index Category', 'guard_name' => 'web']);
+        Permission::create(['name' => 'Show Category', 'guard_name' => 'web']);
+        Permission::create(['name' => 'Edit Category', 'guard_name' => 'web']);
+        Permission::create(['name' => 'Delete Category', 'guard_name' => 'web']);
+
         Permission::create(['name' => 'Create Role', 'guard_name' => 'web']);
         Permission::create(['name' => 'Index Role', 'guard_name' => 'web']);
         Permission::create(['name' => 'Show Role', 'guard_name' => 'web']);
