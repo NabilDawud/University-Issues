@@ -29,7 +29,8 @@
                         <tr class="text-center">
                             <th style="width: 10px">#</th>
                             <th>Category Title</th>
-                            {{-- <th>Issues</th> --}}
+                            <th>Form Fields</th>
+                            <th>Issues</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -38,7 +39,16 @@
                             <tr class="align-middle text-center">
                                 <td>{{ $category->id }}</td>
                                 <td>{{ $category->title }}</td>
-                                {{-- <td>{{ $category->issues->count() }}</td> --}}
+                                <td>
+                                    @if (is_array($category->form_fields ?? null))
+                                        @foreach ($category->form_fields as $field)
+                                            <span class="badge bg-success">{{ $field }}</span>
+                                        @endforeach
+                                    @else
+                                        <span>{{ $category->form_fields ??'N/A' }}</span>
+                                    @endif
+                                </td>
+                                <td><span class="badge bg-danger">{{ $category->issues_count ?? 0 }}</span></td>
                                 <td>
                                     <a href="{{ route('admin.categories.show', $category->id) }}"
                                         class="btn btn-sm btn-primary">Show</a>

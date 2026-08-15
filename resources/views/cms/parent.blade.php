@@ -43,7 +43,7 @@
     <!--begin::Primary Meta Tags-->
     <meta name="title" content="{{ config('app.name') }} | Dashboard" />
     <meta name="author" content="ColorlibHQ" />
-    <meta name="description"
+    <meta name="Description"
         content="AdminLTE is a free Bootstrap 5 admin dashboard template with almost 50 example pages, built with vanilla JS and designed with accessibility in mind." />
     <meta name="keywords"
         content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard, accessible admin panel" />
@@ -566,9 +566,12 @@
                             'Create Deanship',
                             'Index Department',
                             'Create Department',
-                            'Index
-                            Major',
+                            'Index Major',
                             'Create Major',
+                            'Index Category',
+                            'Create Category',
+                            'Index Issue',
+                            'Create Issue',
                             ])
                             <li class="nav-header">Content Management</li>
                             @canAny(['Index Deanship', 'Create Deanship'])
@@ -674,7 +677,8 @@
                                     <ul class="nav nav-treeview">
                                         @can('Create Category')
                                             <li class="nav-item">
-                                                <a href="{{ route('admin.categories.create') }}" class="nav-link align-items-center">
+                                                <a href="{{ route('admin.categories.create') }}"
+                                                    class="nav-link align-items-center">
                                                     <i class="nav-icon fa-solid fa-circle-plus"></i>
                                                     <p>Create Category </p>
                                                 </a>
@@ -682,9 +686,39 @@
                                         @endcan
                                         @can('Index Category')
                                             <li class="nav-item">
-                                                <a href="{{ route('admin.categories.index') }}" class="nav-link align-items-center">
+                                                <a href="{{ route('admin.categories.index') }}"
+                                                    class="nav-link align-items-center">
                                                     <i class="nav-icon fa-solid fa-list"></i>
                                                     <p>Index Categories </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
+                            @canAny(['Index Issue', 'Create Issue'])
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link  align-items-center">
+                                        <i class="nav-icon fa-solid fa-layer-group"></i>
+                                        <p>
+                                            Issues
+                                            <i class="nav-arrow bi bi-chevron-right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        @can('Create Issue')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.issues.create') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-circle-plus"></i>
+                                                    <p>Create Issue </p>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Index Issue')
+                                            <li class="nav-item">
+                                                <a href="{{ route('admin.issues.index') }}" class="nav-link align-items-center">
+                                                    <i class="nav-icon fa-solid fa-list"></i>
+                                                    <p>Index Issues </p>
                                                 </a>
                                             </li>
                                         @endcan

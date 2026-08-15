@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DeanshipController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\IssueController;
 use App\Http\Controllers\MajorController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -39,4 +40,10 @@ Route::prefix('cms/admin/')->middleware(['auth'])->name('admin.')->group(functio
     Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissionsRole'])->name('roles.permissions.update');
     Route::resource('permissions', PermissionController::class)->except(['show', 'edit', 'update']);
     Route::resource('categories', CategoryController::class);
+    Route::resource('issues', IssueController::class);
+    Route::get('issues/{issue}/reassign', [IssueController::class, 'showReassignForm'])->name('issues.reassign');
+    Route::post('issues/{issue}/reassign', [IssueController::class, 'reassign']);
+    Route::post('issues/{issue}/approve', [IssueController::class, 'approve'])->name('issues.approve');
+    Route::post('issues/{issue}/reject', [IssueController::class, 'reject'])->name('issues.reject');
+    Route::post('issues/{issue}/close', [IssueController::class, 'close'])->name('issues.close');
 });

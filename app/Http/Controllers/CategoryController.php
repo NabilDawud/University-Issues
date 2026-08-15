@@ -36,10 +36,16 @@ class CategoryController extends Controller
         Gate::authorize('Create Category');
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'form_fields' => 'nullable|string',
         ]);
-
+        $formFieldsArray = collect(explode(',', $validated['form_fields'] ?? ''))
+            ->map(fn($item) => trim($item))
+            ->filter() // يشيل الفاضي
+            ->values()
+            ->toArray();
         Category::create([
             'title' => $validated['title'],
+            'form_fields' => $formFieldsArray,
         ]);
 
         return response()->json([
@@ -74,10 +80,16 @@ class CategoryController extends Controller
         Gate::authorize('Edit Category');
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'form_fields' => 'nullable|string',
         ]);
-
+        $formFieldsArray = collect(explode(',', $validated['form_fields'] ?? ''))
+            ->map(fn($item) => trim($item))
+            ->filter() // يشيل الفاضي
+            ->values()
+            ->toArray();
         $category->update([
             'title' => $validated['title'],
+            'form_fields' => $formFieldsArray,
         ]);
 
         return response()->json([
