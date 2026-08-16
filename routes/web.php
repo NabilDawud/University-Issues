@@ -47,4 +47,6 @@ Route::prefix('cms/admin/')->middleware(['auth'])->name('admin.')->group(functio
     Route::post('issues/{issue}/reject', [IssueController::class, 'reject'])->name('issues.reject');
     Route::post('issues/{issue}/close', [IssueController::class, 'close'])->name('issues.close');
     Route::post('issues/{issue}/comments', [IssueController::class, 'storeComment'])->name('issues.comments.store');
+    Route::post('issues/{issue}/attachments', [IssueController::class, 'storeAttachment'])->name('issues.attachments.store');
+    Route::delete('attachments/{attachment}', [IssueController::class, 'destroyAttachment'])->name('issues.attachments.destroy');
 });

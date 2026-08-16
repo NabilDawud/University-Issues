@@ -5,83 +5,102 @@
 @section('sub-title', 'Issue #' . $issue->id)
 
 @section('content')
-    <div class="row">
-        <!-- 1. Issue Details -->
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="card-title mb-1">Issue #{{ $issue->id }} - {{ $issue->category->title ?? 'N/A' }}</h3>
-                            <div class="mt-1">
-                                @switch($issue->status)
-                                    @case('approved')
-                                        <span class="badge bg-success fs-5 px-2 py-1 fw-medium">Approved</span>
-                                    @break
+    <!-- 1. Issue Details & History (Left Column) -->
+    <div class="col-md-8">
+        <!-- Details Card -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header border-bottom py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title mb-1 fw-bold">Issue #{{ $issue->id }} -
+                            {{ $issue->category->title ?? 'N/A' }}</h4>
+                        <div class="mt-1">
+                            @switch($issue->status)
+                                @case('approved')
+                                    <span
+                                        class="badge bg-success-subtle text-success border border-success px-2 py-1 fw-medium">Approved</span>
+                                @break
 
-                                    @case('rejected')
-                                        <span class="badge bg-danger fs-5 px-2 py-1 fw-medium">Rejected</span>
-                                    @break
+                                @case('rejected')
+                                    <span
+                                        class="badge bg-danger-subtle text-danger border border-danger px-2 py-1 fw-medium">Rejected</span>
+                                @break
 
-                                    @case('under_review')
-                                        <span class="badge bg-warning text-dark fs-5 px-2 py-1 fw-medium">Under Review</span>
-                                    @break
+                                @case('under_review')
+                                    <span
+                                        class="badge bg-warning-subtle text-warning border border-warning px-2 py-1 fw-medium">Under
+                                        Review</span>
+                                @break
 
-                                    @default
-                                        <span class="badge bg-info fs-5 px-2 py-1 fw-medium">Pending</span>
-                                @endswitch
-                            </div>
-                        </div>
-                        <div>
-                            @can('update', $issue)
-                                <a href="{{ route('admin.issues.edit', $issue->id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-edit"></i> Edit Issue
-                                </a>
-                            @endcan
-                            @can('viewAny', $issue)
-                                <a href="{{ route('admin.issues.index') }}" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-list"></i> Index Issues
-                                </a>
-                            @endcan
+                                @default
+                                    <span
+                                        class="badge bg-info-subtle text-info border border-info px-2 py-1 fw-medium">Pending</span>
+                            @endswitch
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <p><strong>Requester:</strong> {{ $issue->user->name ?? 'N/A' }} ({{ $issue->requester_number }})</p>
-                    <p><strong>Major:</strong> {{ $issue->major->trans_name ?? 'General / None' }}</p>
-                    @if (Auth::user()->user_type_id != 2)
-                        <p><strong>Assigned To:</strong> <span
-                                class="badge bg-light text-dark border">{{ $issue->assignedTo->name ?? 'Unassigned' }}</span>
-                        </p>
-                    @endif
-                    @if ($issue->status == 'rejected')
-                        <p><strong>Rejection Reason:</strong> {{ $issue->rejection_reason ?? 'N/A' }}</p>
-                    @endif
-                    <hr>
-                    <h5>Description</h5>
-                    <p class="text-muted">{{ $issue->description }}</p>
-
-                    @if (!empty($issue->form_data))
-                        <hr>
-                        <h5>Form Additional Data</h5>
-                        <ul>
-                            @foreach ($issue->form_data as $key => $value)
-                                <li><strong>{{ ucfirst($key) }}:</strong>
-                                    {{ is_array($value) ? implode(', ', $value) : $value }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
+                    <div class="d-flex gap-2">
+                        @can('update', $issue)
+                            <a href="{{ route('admin.issues.edit', $issue->id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit me-1"></i> Edit Issue
+                            </a>
+                        @endcan
+                        @can('viewAny', $issue)
+                            <a href="{{ route('admin.issues.index') }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-list me-1"></i> Index Issues
+                            </a>
+                        @endcan
+                    </div>
                 </div>
             </div>
-
-            @if (Auth::user()->user_type_id != 2)
-                <!-- Assignments History Timeline -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">Assignments History</h3>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Requester:</strong> {{ $issue->user->name ?? 'N/A' }}
+                            ({{ $issue->requester_number }})</p>
+                        <p class="mb-1"><strong>Major:</strong> {{ $issue->major->trans_name ?? 'General / None' }}</p>
                     </div>
-                    <div class="card-body p-0">
-                        <table class="table table-sm text-center align-middle">
+                    <div class="col-md-6">
+                        @if (Auth::user()->user_type_id != 2)
+                            <p class="mb-1"><strong>Assigned To:</strong>
+                                <span
+                                    class="badge bg-light text-dark border">{{ $issue->assignedTo->name ?? 'Unassigned' }}</span>
+                            </p>
+                        @endif
+                        @if ($issue->status == 'rejected')
+                            <p class="mb-1 text-danger"><strong>Rejection Reason:</strong>
+                                {{ $issue->rejection_reason ?? 'N/A' }}</p>
+                        @endif
+                    </div>
+                </div>
+
+                <hr>
+                <h5 class="fw-bold fs-6 text-muted mb-2">Description</h5>
+                <p class="text-secondary">{{ $issue->description }}</p>
+
+                @if (!empty($issue->form_data))
+                    <hr>
+                    <h5 class="fw-bold fs-6 text-muted mb-2">Form Additional Data</h5>
+                    <ul class="list-group list-group-flush">
+                        @foreach ($issue->form_data as $key => $value)
+                            <li class="list-group-item px-0 py-1 border-0 bg-transparent">
+                                <strong class="text-capitalize">{{ str_replace('_', ' ', $key) }}:</strong>
+                                {{ is_array($value) ? implode(', ', $value) : $value }}
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        </div>
+
+        @if (Auth::user()->user_type_id != 2)
+            <!-- Assignments History Timeline -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header border-bottom py-3">
+                    <h5 class="card-title mb-0 fw-bold">Assignments History</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm text-center align-middle mb-0">
                             <thead>
                                 <tr>
                                     <th>Action By</th>
@@ -99,61 +118,69 @@
                                         <td><span class="badge bg-secondary">{{ $assignment->status }}</span></td>
                                         <td>{{ $assignment->admin_notes ?? ($assignment->rejection_reason ?? '-') }}</td>
                                         <td>{{ $assignment->created_at->format('Y-m-d H:i') }}
-                                            ({{ $assignment->created_at->diffForHumans() }})
+                                            <small
+                                                class="text-muted d-block">({{ $assignment->created_at->diffForHumans() }})</small>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5">No history recorded yet.</td>
+                                        <td colspan="5" class="py-3 text-muted">No history recorded yet.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
-            @endif
-        </div>
+            </div>
+        @endif
+    </div>
 
-        <!-- 2. Actions & Discussion Section -->
-        <div class="col-md-4">
-            <!-- Management Actions Card -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Management Actions</h3>
-                </div>
-                <div class="card-body">
-                    @if (in_array($issue->status, ['pending', 'under_review']))
-
+    <!-- 2. Actions & Discussion Section (Right Column) -->
+    <div class="col-md-4">
+        <!-- Management Actions Card -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header border-bottom py-3">
+                <h5 class="card-title mb-0 fw-bold">Management Actions</h5>
+            </div>
+            <div class="card-body">
+                @if (in_array($issue->status, ['pending', 'under_review']))
+                    <div class="d-grid gap-2">
                         {{-- Approve Button --}}
                         @can('approve', $issue)
                             <button type="button"
                                 onclick="performAction('{{ route('admin.issues.approve', $issue->id) }}', 'POST', 'Approve this issue?')"
-                                class="btn btn-success w-100 mb-2">
-                                <i class="fas me-1"></i> Approve
+                                class="btn btn-success">
+                                <i class="fas fa-check-circle me-1"></i> Approve Issue
                             </button>
                         @endcan
 
-                        {{-- Reject Button --}}
-                        @can('reject', $issue)
-                            <button type="button" class="btn btn-danger w-100 mb-2" data-bs-toggle="modal"
-                                data-bs-target="#rejectModal">
-                                <i class="fas me-1"></i> Reject
-                            </button>
-                        @endcan
+                        <div class="row g-2">
+                            {{-- Reject Button --}}
+                            @can('reject', $issue)
+                                <div class="col">
+                                    <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
+                                        data-bs-target="#rejectModal">
+                                        <i class="fas fa-times-circle me-1"></i> Reject
+                                    </button>
+                                </div>
+                            @endcan
 
-                        {{-- Close Button --}}
-                        @can('close', $issue)
-                            <button type="button"
-                                onclick="performAction('{{ route('admin.issues.close', $issue->id) }}', 'POST', 'Close this issue?')"
-                                class="btn btn-secondary w-100 mb-2">
-                                <i class="fas me-1"></i> Close
-                            </button>
-                        @endcan
+                            {{-- Close Button --}}
+                            @can('close', $issue)
+                                <div class="col">
+                                    <button type="button"
+                                        onclick="performAction('{{ route('admin.issues.close', $issue->id) }}', 'POST', 'Close this issue?')"
+                                        class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-lock me-1"></i> Close
+                                    </button>
+                                </div>
+                            @endcan
+                        </div>
 
                         {{-- Reassign Button --}}
                         @can('reassign', $issue)
-                            <a href="{{ route('admin.issues.reassign', $issue->id) }}" class="btn btn-warning w-100 mb-2">
-                                <i class="fas me-1"></i> Reassign Issue
+                            <a href="{{ route('admin.issues.reassign', $issue->id) }}" class="btn btn-warning">
+                                <i class="fas fa-user-edit me-1"></i> Reassign Issue
                             </a>
                         @endcan
 
@@ -161,60 +188,137 @@
                             !Auth::user()->can('approve', $issue) &&
                                 !Auth::user()->can('reject', $issue) &&
                                 !Auth::user()->can('reassign', $issue))
-                            <div class="alert alert-info mb-0">
-                                You don't have active permissions to manage this issue.
+                            <div class="alert alert-info mb-0 text-center">
+                                <i class="fas fa-info-circle me-1"></i> No management permissions.
                             </div>
                         @endif
-                    @else
-                        <div class="alert alert-secondary mb-0 text-center">
-                            This issue is <strong>{{ strtoupper($issue->status) }}</strong> and closed for actions.
-                        </div>
-                    @endif
-                </div>
+                    </div>
+                @else
+                    <div class="alert alert-secondary mb-0 text-center">
+                        This issue is <strong>{{ strtoupper($issue->status) }}</strong> and closed for actions.
+                    </div>
+                @endif
             </div>
+        </div>
 
-            <!-- Comments & Discussion Card -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Discussion & Comments</h3>
-                </div>
-                <div class="card-body">
-                    <!-- Add Comment Form -->
+        <!-- Combined Tabbed Card: Comments & Attachments -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header border-bottom p-2">
+                <ul class="nav nav-pills nav-justified" id="issueTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active py-2 fw-medium" id="comments-tab" data-bs-toggle="tab"
+                            data-bs-target="#comments-pane" type="button">
+                            <i class="fas fa-comments me-1"></i> Discussion
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link py-2 fw-medium" id="attachments-tab" data-bs-toggle="tab"
+                            data-bs-target="#attachments-pane" type="button">
+                            <i class="fas fa-paperclip me-1"></i> Files
+                            <span class="badge bg-secondary ms-1"
+                                id="attachment-count">{{ $issue->attachments->count() }}</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body tab-content">
+                <!-- Tab 1: Comments -->
+                <div class="tab-pane fade show active" id="comments-pane">
                     <form id="comment-form" novalidate
                         onsubmit="submitComment(event, '{{ route('admin.issues.comments.store', $issue->id) }}')">
                         @csrf
-                        <div class="mb-3 fieldsDiv">
-                            <label for="comment" class="form-label">Add Comment / Inquiry</label>
-                            <textarea name="comment" id="comment" class="form-control" rows="3" required
-                                placeholder="Type your comment or note here..."></textarea>
+                        <div class="mb-2 fieldsDiv">
+                            <textarea name="comment" id="comment" class="form-control" rows="2" required
+                                placeholder="Type a comment or note..."></textarea>
                             <div class="invalid-feedback"></div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <button type="submit" class="btn btn-primary btn-sm w-100 mb-3">
                             <i class="fas fa-paper-plane me-1"></i> Post Comment
                         </button>
                     </form>
 
-                    <hr>
+                    <hr class="my-2">
 
-                    <!-- Comments List -->
-                    <div id="comments-container">
-                        <h5 class="mb-3">Discussion History</h5>
-                        <div class="comments-list" id="comments-list" style="max-height: 380px; overflow-y: auto;">
+                    <div id="comments-container" class="pe-1" style="max-height: 350px; overflow-y: auto;">
+                        <div class="comments-list" id="comments-list">
                             @forelse($issue->comments as $comment)
+                                @php $isMe = $comment->user_id === Auth::id(); @endphp
                                 <div
-                                    class="card mb-2 p-3 {{ $comment->user_id === Auth::id() ? 'bg-light border-primary' : '' }}">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <strong
-                                            class="{{ $comment->user_id === Auth::id() ? 'text-dark' : 'text-light' }}">{{ $comment->user->name }}</strong>
-                                        <small
-                                            class="{{ $comment->user_id === Auth::id() ? 'text-dark' : 'text-white' }} p-1 rounded">{{ $comment->created_at->diffForHumans() }}</small>
+                                    class="d-flex flex-column mb-3 {{ $isMe ? 'align-items-end' : 'align-items-start' }}">
+                                    <div class="d-flex align-items-center gap-1 mb-1">
+                                        <small class="fw-bold text-muted">{{ $comment->user->name }}</small>
+                                        <small class="text-secondary-emphasis" style="font-size: 0.75rem;">•
+                                            {{ $comment->created_at->diffForHumans() }}</small>
                                     </div>
-                                    <p class="mb-0 text-secondary">{{ $comment->comment }}</p>
+                                    <div
+                                        class="p-2 px-3 rounded-3 max-w-75 {{ $isMe ? 'bg-primary text-white' : 'bg-light text-dark border' }}">
+                                        <p class="mb-0 small" dir="auto">{{ $comment->comment }}</p>
+                                    </div>
                                 </div>
                             @empty
-                                <p class="text-muted text-center my-3" id="no-comments-msg">No comments recorded yet.</p>
+                                <p class="text-muted text-center my-3 small" id="no-comments-msg">No comments recorded
+                                    yet.</p>
                             @endforelse
                         </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Attachments -->
+                <div class="tab-pane fade" id="attachments-pane">
+                    <form id="attachment-form"
+                        onsubmit="submitAttachment(event, '{{ route('admin.issues.attachments.store', $issue->id) }}')"
+                        novalidate enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-2 fieldsDiv">
+                            <input type="file" name="file" id="attachment_file"
+                                class="form-control form-control-sm" required>
+                            <div class="form-text mt-1" style="font-size: 0.75rem;">Allowed: PDF, PNG, JPG, DOCX (Max:
+                                5MB)</div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary btn-sm w-100 mb-3" id="btn-upload">
+                            <i class="fas fa-upload me-1"></i> Upload Attachment
+                        </button>
+                    </form>
+
+                    <hr class="my-2">
+
+                    <div id="attachments-list" class="list-group list-group-flush"
+                        style="max-height: 350px; overflow-y: auto;">
+                        @forelse($issue->attachments as $attachment)
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-bottom"
+                                id="attachment-item-{{ $attachment->id }}">
+                                <div class="d-flex align-items-center text-truncate me-2">
+                                    <i class="fas fa-file-alt text-primary me-2"></i>
+                                    <div class="text-truncate" style="max-width: 150px;">
+                                        <a href="{{ asset($attachment->file_path) }}" target="_blank"
+                                            class="text-muted fw-bold text-decoration-none small">
+                                            {{ $attachment->file_name }}
+                                        </a>
+                                        <div class="text-muted" style="font-size: 0.7rem;">
+                                            {{ round($attachment->file_size / 1024, 1) }} KB •
+                                            {{ $attachment->user->name }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="{{ asset($attachment->file_path) }}" download
+                                        class="btn btn-sm btn-light text-primary py-0 px-2" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    @if (Auth::id() == $attachment->user_id || Auth::user()->user_type_id != 2)
+                                        <button type="button" class="btn btn-sm btn-light text-danger py-0 px-2"
+                                            onclick="deleteAttachment('{{ route('admin.issues.attachments.destroy', $attachment->id) }}', {{ $attachment->id }})"
+                                            title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-muted text-center my-3 small" id="no-attachments-msg">No attachments uploaded
+                                yet.</p>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -223,10 +327,10 @@
 
     <!-- Reject Modal -->
     <div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog border-0">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Reject Issue</h5>
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold">Reject Issue</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="rejectForm" novalidate
@@ -239,7 +343,7 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer border-top">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-danger">Confirm Rejection</button>
                     </div>
@@ -315,50 +419,80 @@
             }
         }
 
-        // New: Submit Comment via AJAX
-        async function submitComment(e, url) {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
-            const Toast = Swal.mixin({
+        // 1. دالة التمرير للأسفل
+        function scrollToBottomComments() {
+            const commentsContainer = document.getElementById('comments-container');
+            if (commentsContainer) {
+                commentsContainer.scrollTop = commentsContainer.scrollHeight;
+            }
+        }
+
+        // التمرير تلقائيًا عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            scrollToBottomComments();
+        });
+
+        // التمرير عند فتح تبويب التعليقات
+        const commentsTab = document.getElementById('comments-tab');
+        if (commentsTab) {
+            commentsTab.addEventListener('shown.bs.tab', function() {
+                scrollToBottomComments();
+            });
+        }
+
+        // 1. دالة ديناميكية لإنشاء Toast تضمن وجود Swal دائماً عند الاستدعاء
+        function getToast() {
+            return Swal.mixin({
                 toast: true,
-                position: 'top-end', // أو 'top-start' إذا كانت الواجهة عربية RTL
+                position: 'top-end',
                 showConfirmButton: false,
                 timer: 4000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
                 }
             });
+        }
+        // 2. دالة إرسال التعليق المعدلة عبر AJAX
+        async function submitComment(e, url) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
             try {
                 const response = await ajaxRequest(url, 'POST', formData);
 
-                // Clear textarea
+                // مسح خانة الإدخال
                 form.reset();
 
-                // Show success toast
-                Toast.fire({
+                // إظهار إشعار النجاح
+                getToast().fire({
                     icon: response.icon ?? 'success',
                     title: response.message ?? 'Comment posted successfully'
                 });
 
-                // Remove 'no comments' message if exists
+                // إزالة رسالة "لا توجد تعليقات"
                 const noCommentsMsg = document.getElementById('no-comments-msg');
                 if (noCommentsMsg) noCommentsMsg.remove();
 
-                // Append new comment to the top of list dynamically
+                // إنشاء التنسيق الجديد (فقاعة محادثة للمستخدم الحالي)
                 const commentsList = document.getElementById('comments-list');
                 const newCommentHtml = `
-                    <div class="card mb-2 p-3 bg-light border-primary">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <strong class="text-dark">${response.comment.user.name}</strong>
-                            <small class="text-muted">Just now</small>
-                        </div>
-                        <p class="mb-0 text-dark">${response.comment.comment}</p>
-                    </div>
-                `;
-                commentsList.insertAdjacentHTML('afterbegin', newCommentHtml);
+            <div class="d-flex flex-column mb-3 align-items-end">
+                <div class="d-flex align-items-center gap-1 mb-1">
+                    <small class="fw-bold text-muted">${response.comment.user.name}</small>
+                    <small class="text-secondary-emphasis" style="font-size: 0.75rem;">• Just now</small>
+                </div>
+                <div class="p-2 px-3 rounded-3 bg-primary text-white" style="max-width: 85%;">
+                    <p class="mb-0 small" dir="auto">${response.comment.comment}</p>
+                </div>
+            </div>
+        `;
+
+                // إدراج التعليق في آخر القائمة (beforeend) وتمرير السكرول للأسفل
+                commentsList.insertAdjacentHTML('beforeend', newCommentHtml);
+                scrollToBottomComments();
 
             } catch (error) {
                 if (error.errors) {
@@ -371,5 +505,118 @@
                 }
             }
         }
+
+        // Upload Attachment via AJAX
+        async function submitAttachment(e, url) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const submitBtn = document.getElementById('btn-upload');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
+
+            try {
+                const response = await ajaxRequest(url, 'POST', formData);
+
+                form.reset();
+
+                getToast().fire({
+                    icon: response.icon ?? 'success',
+                    title: response.message ?? 'File uploaded successfully'
+                });
+
+                // Remove 'no attachments' message if present
+                const noMsg = document.getElementById('no-attachments-msg');
+                if (noMsg) noMsg.remove();
+
+                // Append new attachment item to list
+                const list = document.getElementById('attachments-list');
+                const itemHtml = `
+            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" id="attachment-item-${response.attachment.id}">
+                <div class="d-flex align-items-center text-truncate me-2">
+                    <i class="fas fa-file-alt text-primary me-2 fa-lg"></i>
+                    <div class="text-truncate">
+                        <a href="${response.attachment.file_url}" target="_blank" class="text-muted fw-bold text-decoration-none">
+                            ${response.attachment.file_name}
+                        </a>
+                        <br>
+                        <small class="text-muted">${(response.attachment.file_size / 1024).toFixed(1)} KB • Just now</small>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <a href="${response.attachment.file_url}" download class="btn btn-sm btn-light text-primary py-0 px-2" title="Download">
+                        <i class="fas fa-download"></i>
+                    </a>
+                    <button type="button" class="btn btn-sm btn-light text-danger py-0 px-2" title="Delete" onclick="deleteAttachment('${response.delete_url}', ${response.attachment.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+                list.insertAdjacentHTML('afterbegin', itemHtml);
+
+                // Update Counter
+                const countBadge = document.getElementById('attachment-count');
+                if (countBadge) countBadge.innerText = parseInt(countBadge.innerText) + 1;
+
+            } catch (error) {
+                if (error.errors) {
+                    showErrors(error.errors);
+                } else {
+                    Swal.fire({
+                        icon: error.icon ?? 'error',
+                        title: error.message ?? 'Upload failed'
+                    });
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paperclip me-1"></i> Upload Attachment';
+            }
+        }
+
+        // Delete Attachment via AJAX
+        async function deleteAttachment(url, id) {
+            const result = await Swal.fire({
+                title: 'Delete this file?',
+                text: 'This action cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const response = await ajaxRequest(url, 'DELETE');
+
+                getToast().fire({
+                    icon: 'success',
+                    title: response.message ?? 'File deleted'
+                });
+
+                // Remove element from UI
+                const item = document.getElementById(`attachment-item-${id}`);
+                if (item) item.remove();
+
+                // Update Counter
+                const countBadge = document.getElementById('attachment-count');
+                if (countBadge) {
+                    const newCount = Math.max(0, parseInt(countBadge.innerText) - 1);
+                    countBadge.innerText = newCount;
+                    if (newCount === 0) {
+                        document.getElementById('attachments-list').innerHTML =
+                            '<p class="text-muted text-center my-3" id="no-attachments-msg">No attachments uploaded yet.</p>';
+                    }
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: error.icon ?? 'error',
+                    title: error.message ?? 'Delete failed'
+                });
+            }
+        }
     </script>
+
 @endsection

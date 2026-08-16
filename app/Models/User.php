@@ -52,6 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
     public function isAdmin()
     {
         return $this->userType->id === 1;

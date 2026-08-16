@@ -53,6 +53,10 @@ class Issue extends Model
     }
     public function comments()
     {
-        return $this->hasMany(Comment::class)->latest();
+        return $this->hasMany(Comment::class);
+    }
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class)->latest();
     }
 }

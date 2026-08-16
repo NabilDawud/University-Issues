@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attachment;
 use App\Models\Issue;
 use App\Models\Major;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 
 class IssueController extends Controller
@@ -131,7 +133,8 @@ class IssueController extends Controller
             'actionBy',
             'assignments.assignedTo',
             'assignments.actionBy',
-            'comments.user'
+            'comments.user',
+            'attachments.user',
         ]);
         return view('cms.issues.show', compact('issue'));
     }
@@ -369,5 +372,57 @@ class IssueController extends Controller
             'icon' => 'success',
             'comment' => $comment,
         ], 201);
+    }
+    public function storeAttachment(Request $request, Issue $issue)
+    {
+        Gate::authorize('view', $issue);
+        $request->validate([
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx,zip|max:5120', // 5MB
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $path = $file->store("uploads/issues/{$issue->requester_number}/attachments", 'custom');
+
+            $attachment = $issue->attachments()->create([
+                'user_id' => Auth::id(),
+                'file_name' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'file_type' => $file->getClientOriginalExtension(),
+                'file_size' => $file->getSize(),
+            ]);
+
+            return response()->json([
+                'message' => 'File uploaded successfully',
+                'icon' => 'success',
+                'attachment' => [
+                    'id' => $attachment->id,
+                    'file_name' => $attachment->file_name,
+                    'file_size' => $attachment->file_size,
+                    'file_url' => asset($attachment->file_path),
+                ],
+                'delete_url' => route('admin.issues.attachments.destroy', $attachment->id),
+            ], 201);
+        }
+
+        return response()->json(['message' => 'No file provided'], 400);
+    }
+    public function destroyAttachment(Attachment $attachment)
+    {
+        // Permission Check
+        if (Auth::id() !== $attachment->user_id && Auth::user()->user_type_id == 2) {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+
+        // Delete from Storage
+        File::delete($attachment->file_path);
+
+        // Delete record from Database
+        $attachment->delete();
+
+        return response()->json([
+            'message' => 'Attachment deleted successfully',
+            'icon' => 'success',
+        ]);
     }
 }
