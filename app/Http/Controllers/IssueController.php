@@ -130,7 +130,8 @@ class IssueController extends Controller
             'assignedTo',
             'actionBy',
             'assignments.assignedTo',
-            'assignments.actionBy'
+            'assignments.actionBy',
+            'comments.user'
         ]);
         return view('cms.issues.show', compact('issue'));
     }
@@ -345,5 +346,28 @@ class IssueController extends Controller
                 'icon' => 'success',
             ], 200);
         });
+    }
+    public function storeComment(Request $request, Issue $issue)
+    {
+        // التحقق من أن المستخدم يمتلك صلاحية رؤية الطلب للتعليق عليه
+        Gate::authorize('view', $issue);
+
+        $validated = $request->validate([
+            'comment' => 'required|string|max:2000',
+        ]);
+
+        $comment = $issue->comments()->create([
+            'user_id' => Auth::id(),
+            'comment' => $validated['comment'],
+        ]);
+
+        // تحميل بيانات المستخدم للرد الفوري مع AJAX
+        $comment->load('user');
+
+        return response()->json([
+            'message' => 'Comment added successfully',
+            'icon' => 'success',
+            'comment' => $comment,
+        ], 201);
     }
 }

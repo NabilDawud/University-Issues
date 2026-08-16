@@ -6,28 +6,44 @@
 
 @section('content')
     <div class="row">
-        <!-- 1. تفاصيل الطلب الرئيسي -->
+        <!-- 1. Issue Details -->
         <div class="col-md-8">
             <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">Issue #{{ $issue->id }} - {{ $issue->category->title ?? 'N/A' }}</h3>
-                    <div>
-                        @switch($issue->status)
-                            @case('approved')
-                                <span class="badge bg-success">Approved</span>
-                            @break
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="card-title mb-1">Issue #{{ $issue->id }} - {{ $issue->category->title ?? 'N/A' }}</h3>
+                            <div class="mt-1">
+                                @switch($issue->status)
+                                    @case('approved')
+                                        <span class="badge bg-success fs-5 px-2 py-1 fw-medium">Approved</span>
+                                    @break
 
-                            @case('rejected')
-                                <span class="badge bg-danger">Rejected</span>
-                            @break
+                                    @case('rejected')
+                                        <span class="badge bg-danger fs-5 px-2 py-1 fw-medium">Rejected</span>
+                                    @break
 
-                            @case('under_review')
-                                <span class="badge bg-warning text-dark">Under Review</span>
-                            @break
+                                    @case('under_review')
+                                        <span class="badge bg-warning text-dark fs-5 px-2 py-1 fw-medium">Under Review</span>
+                                    @break
 
-                            @default
-                                <span class="badge bg-info">Pending</span>
-                        @endswitch
+                                    @default
+                                        <span class="badge bg-info fs-5 px-2 py-1 fw-medium">Pending</span>
+                                @endswitch
+                            </div>
+                        </div>
+                        <div>
+                            @can('update', $issue)
+                                <a href="{{ route('admin.issues.edit', $issue->id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Edit Issue
+                                </a>
+                            @endcan
+                            @can('viewAny', $issue)
+                                <a href="{{ route('admin.issues.index') }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-list"></i> Index Issues
+                                </a>
+                            @endcan
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -59,7 +75,7 @@
             </div>
 
             @if (Auth::user()->user_type_id != 2)
-                <!-- سجل حركة الطلب (Assignments History Timeline) -->
+                <!-- Assignments History Timeline -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <h3 class="card-title">Assignments History</h3>
@@ -98,8 +114,9 @@
             @endif
         </div>
 
-        <!-- 2. كارت الإجراءات (Actions Card) -->
+        <!-- 2. Actions & Discussion Section -->
         <div class="col-md-4">
+            <!-- Management Actions Card -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">Management Actions</h3>
@@ -107,7 +124,7 @@
                 <div class="card-body">
                     @if (in_array($issue->status, ['pending', 'under_review']))
 
-                        {{-- زر القبول --}}
+                        {{-- Approve Button --}}
                         @can('approve', $issue)
                             <button type="button"
                                 onclick="performAction('{{ route('admin.issues.approve', $issue->id) }}', 'POST', 'Approve this issue?')"
@@ -116,14 +133,15 @@
                             </button>
                         @endcan
 
-                        {{-- زر الرفض (يفتح مودال لإدخال سبب الرفض) --}}
+                        {{-- Reject Button --}}
                         @can('reject', $issue)
                             <button type="button" class="btn btn-danger w-100 mb-2" data-bs-toggle="modal"
                                 data-bs-target="#rejectModal">
                                 <i class="fas me-1"></i> Reject
                             </button>
                         @endcan
-                        {{-- زر الإغلاق (يفتح مودال لإدخال سبب الإغلاق) --}}
+
+                        {{-- Close Button --}}
                         @can('close', $issue)
                             <button type="button"
                                 onclick="performAction('{{ route('admin.issues.close', $issue->id) }}', 'POST', 'Close this issue?')"
@@ -132,7 +150,7 @@
                             </button>
                         @endcan
 
-                        {{-- زر إعادة التعيين (ينقل للصفحة) --}}
+                        {{-- Reassign Button --}}
                         @can('reassign', $issue)
                             <a href="{{ route('admin.issues.reassign', $issue->id) }}" class="btn btn-warning w-100 mb-2">
                                 <i class="fas me-1"></i> Reassign Issue
@@ -154,10 +172,56 @@
                     @endif
                 </div>
             </div>
+
+            <!-- Comments & Discussion Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">Discussion & Comments</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Add Comment Form -->
+                    <form id="comment-form" novalidate
+                        onsubmit="submitComment(event, '{{ route('admin.issues.comments.store', $issue->id) }}')">
+                        @csrf
+                        <div class="mb-3 fieldsDiv">
+                            <label for="comment" class="form-label">Add Comment / Inquiry</label>
+                            <textarea name="comment" id="comment" class="form-control" rows="3" required
+                                placeholder="Type your comment or note here..."></textarea>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-paper-plane me-1"></i> Post Comment
+                        </button>
+                    </form>
+
+                    <hr>
+
+                    <!-- Comments List -->
+                    <div id="comments-container">
+                        <h5 class="mb-3">Discussion History</h5>
+                        <div class="comments-list" id="comments-list" style="max-height: 380px; overflow-y: auto;">
+                            @forelse($issue->comments as $comment)
+                                <div
+                                    class="card mb-2 p-3 {{ $comment->user_id === Auth::id() ? 'bg-light border-primary' : '' }}">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong
+                                            class="{{ $comment->user_id === Auth::id() ? 'text-dark' : 'text-light' }}">{{ $comment->user->name }}</strong>
+                                        <small
+                                            class="{{ $comment->user_id === Auth::id() ? 'text-dark' : 'text-white' }} p-1 rounded">{{ $comment->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    <p class="mb-0 text-secondary">{{ $comment->comment }}</p>
+                                </div>
+                            @empty
+                                <p class="text-muted text-center my-3" id="no-comments-msg">No comments recorded yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Modal للرفض لإدخال السبب -->
+    <!-- Reject Modal -->
     <div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -188,7 +252,7 @@
 @section('scripts')
     @include('components.alerts')
     <script>
-        // دالة لتنفيذ العمليات المباشرة مثل Approve
+        // Direct Action Handler (e.g. Approve / Close)
         async function performAction(url, method, confirmTitle) {
             const result = await Swal.fire({
                 title: confirmTitle,
@@ -218,18 +282,15 @@
             }
         }
 
-
+        // Rejection Form Submission
         async function submitReject(e, url) {
             e.preventDefault();
-
-            // استخدام FormData لقراءة كافة مدخلات النموذج تلقائياً
             const form = e.target;
             const formData = new FormData(form);
 
             try {
                 const response = await ajaxRequest(url, 'POST', formData);
 
-                // إغلاق المودال بعد النجاح
                 const modalEl = document.getElementById('rejectModal');
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 if (modal) modal.hide();
@@ -244,12 +305,68 @@
                 });
             } catch (error) {
                 if (error.errors) {
-                    // عرض أخطاء الـ Validation إن وجدت
                     showErrors(error.errors);
                 } else {
                     Swal.fire({
                         icon: error.icon ?? 'error',
                         title: error.message ?? 'Rejection failed'
+                    });
+                }
+            }
+        }
+
+        // New: Submit Comment via AJAX
+        async function submitComment(e, url) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end', // أو 'top-start' إذا كانت الواجهة عربية RTL
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            try {
+                const response = await ajaxRequest(url, 'POST', formData);
+
+                // Clear textarea
+                form.reset();
+
+                // Show success toast
+                Toast.fire({
+                    icon: response.icon ?? 'success',
+                    title: response.message ?? 'Comment posted successfully'
+                });
+
+                // Remove 'no comments' message if exists
+                const noCommentsMsg = document.getElementById('no-comments-msg');
+                if (noCommentsMsg) noCommentsMsg.remove();
+
+                // Append new comment to the top of list dynamically
+                const commentsList = document.getElementById('comments-list');
+                const newCommentHtml = `
+                    <div class="card mb-2 p-3 bg-light border-primary">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-dark">${response.comment.user.name}</strong>
+                            <small class="text-muted">Just now</small>
+                        </div>
+                        <p class="mb-0 text-dark">${response.comment.comment}</p>
+                    </div>
+                `;
+                commentsList.insertAdjacentHTML('afterbegin', newCommentHtml);
+
+            } catch (error) {
+                if (error.errors) {
+                    showErrors(error.errors);
+                } else {
+                    Swal.fire({
+                        icon: error.icon ?? 'error',
+                        title: error.message ?? 'Failed to post comment'
                     });
                 }
             }

@@ -46,4 +46,5 @@ Route::prefix('cms/admin/')->middleware(['auth'])->name('admin.')->group(functio
     Route::post('issues/{issue}/approve', [IssueController::class, 'approve'])->name('issues.approve');
     Route::post('issues/{issue}/reject', [IssueController::class, 'reject'])->name('issues.reject');
     Route::post('issues/{issue}/close', [IssueController::class, 'close'])->name('issues.close');
+    Route::post('issues/{issue}/comments', [IssueController::class, 'storeComment'])->name('issues.comments.store');
 });

@@ -51,5 +51,8 @@ class Issue extends Model
     {
         return $this->hasMany(IssueAssignment::class);
     }
-
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->latest();
+    }
 }

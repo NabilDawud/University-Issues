@@ -44,6 +44,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserType::class)->withDefault();
     }
+    public function issues()
+    {
+        return $this->hasMany(Issue::class);
+    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
     public function isAdmin()
     {
         return $this->userType->id === 1;
